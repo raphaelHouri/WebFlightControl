@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
-
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
@@ -46,7 +45,8 @@ namespace FlightControlWeb.Controllers
 
             //SQL part
             Database databaseObject = new Database();
-
+            SQLCommands sql = new SQLCommands();
+            sql.addPlan(p, databaseObject);
             return p;
             }
   
