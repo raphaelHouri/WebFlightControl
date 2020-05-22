@@ -80,7 +80,39 @@ namespace FlightControlWeb
 
             }
 
+        } 
+        public void deleteRow(string id, Database databaseObject)
+        {
+            string query = $"DELETE FROM Flight WHERE id = '{id}';";
+            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            int result = myCommand.ExecuteNonQuery();
+            if (result > 0)
+            {
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Console.WriteLine(result);
+            }
+            databaseObject.CloseConnection();
+            query = $"DELETE FROM Segments WHERE id = '{id}';";
+            myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            result = myCommand.ExecuteNonQuery();
+            if (result > 0)
+            {
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Console.WriteLine(result);
+            }
+            databaseObject.CloseConnection();
+
         }
+
+    
 
             public string createId()
         {
