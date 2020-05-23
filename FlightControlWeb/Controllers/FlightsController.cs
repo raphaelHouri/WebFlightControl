@@ -46,7 +46,7 @@ namespace FlightControlWeb.Controllers
             //SQL part
             Database databaseObject = new Database();
             SQLCommands sql = new SQLCommands();
-            sql.addPlan(p, databaseObject);
+           // sql.addPlan(p, databaseObject);
             return p;
             }
   
