@@ -11,8 +11,8 @@ namespace FlightControlWeb
     public partial class FlightPlan
     {
  /*       public string Id { get; set; }*/
-        [JsonProperty("passenger")]
-        public long Passenger { get; set; }
+        [JsonProperty("passengers")]
+        public long Passengers { get; set; }
 
         [JsonProperty("company_name")]
         public string Company_Name { get; set; }
