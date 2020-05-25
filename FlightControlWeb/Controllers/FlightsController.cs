@@ -35,13 +35,14 @@ namespace FlightControlWeb.Controllers
             List<Flight> flights = new List<Flight>();
             //we need to get from the db all the flight plan that are relvante
             List<FlightPlan> f = null;
+
             for (int i = 0; i < f.Count; i++)
             {
                 //step 1. subset from  current datetime to initial(need to convert the string).
-                double diff = calculator.SubTime(f[i].Initial_Location.DateTime, relative_to);
+                double diff = calculator.SubTime(f[i].Initial_Location.Date_Time, relative_to);
                 //interpolsion-get the current point
                 Coordinate currentPlace = calculator.CurrentPlace(relative_to, f[i].Segments, diff);
-                flights.Add(new Flight(f[i].Id, currentPlace.Lng, currentPlace.Lat, f[i].Passengers, f[i].Company_Name, f[i].Initial_Location.DateTime, false));
+                flights.Add(new Flight(f[i].Id, currentPlace.Lng, currentPlace.Lat, f[i].Passengers, f[i].Company_Name, f[i].Initial_Location.Date_Time, false));
             }
             return flights;
         }

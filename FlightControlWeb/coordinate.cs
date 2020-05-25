@@ -8,18 +8,39 @@ namespace FlightControlWeb
 {
     public class Coordinate
     {
-        private double lat;
         private double lng;
+        private double lat;
+
         public Coordinate(double lat, double lng)
         {
             this.lat = lat;
             this.lng = lng;
 
         }
-        public double Lat { get; set; }
-        public double Lng { get; set; }
 
 
+        public double Lat
+        {
+            set
+            {
+                this.lat = value;
+            }
+            get
+            {
+                return lat;
+            }
+        }
+        public double Lng
+        {
+            set
+            {
+                this.lng = value;
+            }
+            get
+            {
+                return lng;
+            }
+        }
 
     }
 }

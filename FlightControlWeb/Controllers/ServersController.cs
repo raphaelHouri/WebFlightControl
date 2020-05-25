@@ -19,8 +19,8 @@ namespace FlightControlWeb.Controllers
         }
 
         // GET: api/Servers/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{id}", Name = "GetServer")]
+        public string GetServer(int id)
         {
             return "value";
         }

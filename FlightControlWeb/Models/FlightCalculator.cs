@@ -27,22 +27,22 @@ namespace FlightControlWeb.Models
             return new DateTime();
             }
          // sum total time the flight take
-        public double SumTimeSpan(Segment[] segments,int index)
+        public double SumTimeSpan(List<Segment> segments,int index)
         {
             double sum = 0;
             for (int i = 0; i < index; i++)
             {
-                sum = sum + segments[i].TimespanSeconds;
+                sum = sum + segments[i].Timespan_Seconds;
             }
             return sum;
         }
 
         //find the spesific segment
-        public int findIndexSegment(Segment[] segments, double diff)
+        public int findIndexSegment(List<Segment> segments, double diff)
         {
             double time = 0;
             int index = 0;
-            for(int i = 0; i < segments.Length; i++)
+            for(int i = 0; i < segments.Count; i++)
             {
                 if (time > diff)
                 {
@@ -56,13 +56,13 @@ namespace FlightControlWeb.Models
                 }
                 else
                 {
-                    time = time + segments[i].TimespanSeconds;
+                    time = time + segments[i].Timespan_Seconds;
                 }
             }
             return index;
            
         }
-        public Coordinate CurrentPlace(string current,Segment[] s,double diff)
+        public Coordinate CurrentPlace(string current,List<Segment> s,double diff)
         {
             int findIndex = this.findIndexSegment(s, diff);
             //add condition if ifind=0;
@@ -74,7 +74,7 @@ namespace FlightControlWeb.Models
             //find the time from the begin to the current in the spesfic segment
             double left = diff - SumTimeSpan(s, findIndex);
             //find the left time 
-            double right = s[findIndex].TimespanSeconds - left;
+            double right = s[findIndex].Timespan_Seconds - left;
             double currentlat = (latStart * right + latEnd * left) / (left+right);
             double currentlong = (longStart * right + longEnd * left) / (left+right);
             Coordinate currentP = new Coordinate(currentlat,currentlong);

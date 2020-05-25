@@ -13,8 +13,8 @@ namespace FlightControlWeb.Controllers
     {
 
         // GET: api/FlightPlan/5
-        [HttpGet("{id}", Name = "Get")]
-        public FlightPlan Get(string id)
+        [HttpGet("{id}", Name = "GetFlightPlan")]
+        public FlightPlan GetFlightPlan(string id)
         {
             //find the flighplan in db
             FlightPlan f=null;
@@ -31,7 +31,7 @@ namespace FlightControlWeb.Controllers
             //SQL part
             Database databaseObject = new Database();
             SQLCommands sql = new SQLCommands();
-            // sql.addPlan(p, databaseObject);
+            sql.addPlan(p, databaseObject);
             return p;
         }
 

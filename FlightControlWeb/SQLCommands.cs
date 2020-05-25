@@ -16,10 +16,10 @@ namespace FlightControlWeb
             string id = createId();
 
             Coordinate coord = getEndCoors(flightPlan.Segments);
-            DateTime endTime = getEndTime(flightPlan.Segments, flightPlan.Initial_Location.DateTime);
+            DateTime endTime = getEndTime(flightPlan.Segments, flightPlan.Initial_Location.Date_Time);
 
             //fix time to utc and creat string
-            DateTime statTime = TimeZone.CurrentTimeZone.ToUniversalTime(flightPlan.Initial_Location.DateTime);
+            DateTime statTime = TimeZone.CurrentTimeZone.ToUniversalTime(flightPlan.Initial_Location.Date_Time);
             string statTimeString = statTime.ToString("f", DateTimeFormatInfo.InvariantInfo);
             endTime = TimeZone.CurrentTimeZone.ToUniversalTime(endTime);
             string endTimeString = endTime.ToString("f", DateTimeFormatInfo.InvariantInfo);
@@ -33,7 +33,7 @@ namespace FlightControlWeb
             myCommand.Parameters.AddWithValue("@start_latitude", flightPlan.Initial_Location.Latitude);
             myCommand.Parameters.AddWithValue("@start_longitude", flightPlan.Initial_Location.Longitude);
             myCommand.Parameters.AddWithValue("@end_latitude", coord.Lat);
-            myCommand.Parameters.AddWithValue("@end_longitude", coord.Lat);
+            myCommand.Parameters.AddWithValue("@end_longitude", coord.Lng);
             myCommand.Parameters.AddWithValue("@start_time", statTimeString);
             myCommand.Parameters.AddWithValue("@end_time", endTimeString);
             myCommand.Parameters.AddWithValue("@company", flightPlan.Company_Name);
@@ -49,7 +49,7 @@ namespace FlightControlWeb
             }
             databaseObject.CloseConnection();
 
-            Console.WriteLine("Rows Added : {0}", result);
+            //Console.WriteLine("Rows Added : {0}", result);
  
         }
         public void addListSegmet(FlightPlan flightPlan, Database databaseObject, string id)
@@ -66,7 +66,7 @@ namespace FlightControlWeb
                 myCommand.Parameters.AddWithValue("@serial", i);
                 myCommand.Parameters.AddWithValue("@longitude", flightPlan.Segments[i].Longitude);
                 myCommand.Parameters.AddWithValue("@latitude", flightPlan.Segments[i].Latitde);
-                myCommand.Parameters.AddWithValue("@timespan", flightPlan.Segments[i].TimespanSeconds);
+                myCommand.Parameters.AddWithValue("@timespan", flightPlan.Segments[i].Timespan_Seconds);
                 int result = myCommand.ExecuteNonQuery();
                 if (result > 0)
                 {
@@ -111,7 +111,7 @@ namespace FlightControlWeb
             databaseObject.CloseConnection();
 
         }      
-        public void returnJsonPlan(string id, Database databaseObject)
+        public void returnListPlans(string id, Database databaseObject)
         {
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
@@ -183,7 +183,7 @@ namespace FlightControlWeb
             double sumSeconds = 0;
             foreach (Segment item in seg)
             {
-                sumSeconds += item.TimespanSeconds;
+                sumSeconds += item.Timespan_Seconds;
             }
             return startTime.AddSeconds(sumSeconds);
             //for (int i=0 ; i < seg.Length; i++)

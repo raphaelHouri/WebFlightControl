@@ -36,7 +36,7 @@ namespace FlightControlWeb
         public double Latitude { get; set; }
 
         [JsonProperty("date_time")]
-        public DateTime DateTime { get; set; }
+        public DateTime Date_Time { get; set; }
     }
 
     public partial class Segment
@@ -48,7 +48,7 @@ namespace FlightControlWeb
         public double Latitde { get; set; }
 
         [JsonProperty("timespan_seconds")]
-        public double TimespanSeconds { get; set; }
+        public double Timespan_Seconds { get; set; }
     }
 
     public partial class Welcome
