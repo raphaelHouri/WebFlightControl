@@ -6,6 +6,7 @@ namespace FlightControlWeb
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
 
     public partial class FlightPlan
@@ -23,7 +24,7 @@ namespace FlightControlWeb
         public InitialLocation Initial_Location { get; set; }
 
         [JsonProperty("segments")]
-        public Segment[] Segments { get; set; }
+        public List<Segment> Segments { get; set; }
     }
 
     public partial class InitialLocation
@@ -47,7 +48,7 @@ namespace FlightControlWeb
         public double Latitde { get; set; }
 
         [JsonProperty("timespan_seconds")]
-        public int TimespanSeconds { get; set; }
+        public double TimespanSeconds { get; set; }
     }
 
     public partial class Welcome

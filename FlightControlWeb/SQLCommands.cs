@@ -66,7 +66,7 @@ namespace FlightControlWeb
                 myCommand.Parameters.AddWithValue("@serial", i);
                 myCommand.Parameters.AddWithValue("@longitude", flightPlan.Segments[i].Longitude);
                 myCommand.Parameters.AddWithValue("@latitude", flightPlan.Segments[i].Latitde);
-                myCommand.Parameters.AddWithValue("@timespan", flightPlan.Segments[i].Timespan_Seconds);
+                myCommand.Parameters.AddWithValue("@timespan", flightPlan.Segments[i].TimespanSeconds);
                 int result = myCommand.ExecuteNonQuery();
                 if (result > 0)
                 {
@@ -183,7 +183,7 @@ namespace FlightControlWeb
             double sumSeconds = 0;
             foreach (Segment item in seg)
             {
-                sumSeconds += item.Timespan_Seconds;
+                sumSeconds += item.TimespanSeconds;
             }
             return startTime.AddSeconds(sumSeconds);
             //for (int i=0 ; i < seg.Length; i++)
