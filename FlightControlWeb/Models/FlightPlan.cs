@@ -49,6 +49,19 @@ namespace FlightControlWeb
 
         [JsonProperty("timespan_seconds")]
         public double Timespan_Seconds { get; set; }
+        /*  private double longitude;
+        private double latitde;
+        private double timespan_seconds;*/
+
+        public Segment() { }
+        public Segment(double lng,double lat,double time)
+        {
+            this.Longitude = lng;
+            this.Latitde = lat;
+            this.Timespan_Seconds = time;
+        }
+        
+        
     }
 
     public partial class Welcome

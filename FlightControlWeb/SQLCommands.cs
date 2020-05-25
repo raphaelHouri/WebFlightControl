@@ -12,7 +12,7 @@ namespace FlightControlWeb
     {
         public void addPlan(FlightPlan flightPlan, Database databaseObject)
         {
-            
+
             string id = createId();
 
             Coordinate coord = getEndCoors(flightPlan.Segments);
@@ -26,7 +26,7 @@ namespace FlightControlWeb
             addListSegmet(flightPlan, databaseObject, id);
             ////// INSERT INTO DATABASE
             string query = "INSERT INTO Flight ('id', 'start_latitude','start_longitude','end_latitude','end_longitude','start_time','end_time', 'company', 'passengers') VALUES (@id, @start_latitude, @start_longitude, @end_latitude, @end_longitude ,@start_time, @end_time, @company, @passengers );";
-                                                                                                   
+
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             myCommand.Parameters.AddWithValue("@id", id);
@@ -50,7 +50,7 @@ namespace FlightControlWeb
             databaseObject.CloseConnection();
 
             //Console.WriteLine("Rows Added : {0}", result);
- 
+
         }
         public void addListSegmet(FlightPlan flightPlan, Database databaseObject, string id)
         {
@@ -80,7 +80,7 @@ namespace FlightControlWeb
 
             }
 
-        } 
+        }
         public void deleteRow(string id, Database databaseObject)
         {
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
@@ -110,7 +110,7 @@ namespace FlightControlWeb
             }
             databaseObject.CloseConnection();
 
-        }      
+        }
         public void returnListPlans(string id, Database databaseObject)
         {
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
@@ -140,7 +140,7 @@ namespace FlightControlWeb
             }
             databaseObject.CloseConnection();
 
-        }  
+        }
         public List<Coordinate> segmentList(string id, Database databaseObject)
         {
 
@@ -157,7 +157,7 @@ namespace FlightControlWeb
                 {
 
                     segmentList.Add(new Coordinate( Convert.ToDouble($"{result["longitude"]}"), Convert.ToDouble($"{result["latitude"]}")));
-                    
+
                 }
             }
             databaseObject.CloseConnection();
@@ -165,9 +165,9 @@ namespace FlightControlWeb
 
         }
 
-    
 
-            public string createId()
+
+        public string createId()
         {
             RandomGenerator generator = new RandomGenerator();
             return generator.RandomPassword();
@@ -178,7 +178,7 @@ namespace FlightControlWeb
             Coordinate coord = new Coordinate(seg[lastSegIndex].Latitde, seg[lastSegIndex].Latitde);
             return coord;
         }
-        public DateTime getEndTime(List<Segment>seg, DateTime startTime)
+        public DateTime getEndTime(List<Segment>seg, DateTime startTime)  
         {
             double sumSeconds = 0;
             foreach (Segment item in seg)
