@@ -11,30 +11,28 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        // GET: api/FlightPlan
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
         // GET: api/FlightPlan/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public FlightPlan Get(string id)
         {
-            return "value";
+            //find the flighplan in db
+            FlightPlan f=null;
+            return f;
         }
 
         // POST: api/FlightPlan
         [HttpPost]
-        public void Post([FromBody] string value)
+        public FlightPlan Post([FromBody] FlightPlan p)
         {
-        }
+            // p.Id = 5;
+            // return CreatedAtAction(actionName: "GetItem", new { id = p.Id }, p);
 
-        // PUT: api/FlightPlan/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
+            //SQL part
+            Database databaseObject = new Database();
+            SQLCommands sql = new SQLCommands();
+            // sql.addPlan(p, databaseObject);
+            return p;
         }
 
         // DELETE: api/ApiWithActions/5

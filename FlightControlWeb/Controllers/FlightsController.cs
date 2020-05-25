@@ -18,7 +18,7 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightsController : ControllerBase
     {
-
+        private FlightCalculator calculator = new FlightCalculator();
 
         //injection - we should get it in the constructor not new
         // private IProductManager flightManager = new ProductsManger();
@@ -26,22 +26,23 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public IEnumerable<Flight> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
         {
+            bool checkSyncAll = Request.Query.ContainsKey("sync_all");
+            if (checkSyncAll)
+            {
+                //need to get flights from out servers
+            }
+            //the list of flighs we will send to the cliet to update the markers
             List<Flight> flights = new List<Flight>();
-            FlightCalculator calculator = new FlightCalculator();
-            FlightPlan f=null;
-            //interpolsion
-            //step 1. subset from  current datetime to initial(need to convert the string).
-            double diff = calculator.SubTime(f.Initial_Location.DateTime, relative_to);
-            //step 2. sum total time the flight take
-            double total = calculator.SumTimeSpan(f.Segments);
-            //step 3. divide the dattime from the total
-            double realtiveTime = diff / total;
-            //step 4. check the total distance in the flight
-            double totalDis = calculator.TotalDistance(f.Segments);
-            //step 5.mult the realtive time to the total distance
-            double longitude=1;
-            double latitde=1;
-            flights.Add(new Flight(f.Id, longitude, latitde, f.Passengers, f.Company_Name, f.Initial_Location.DateTime, false));
+            //we need to get from the db all the flight plan that are relvante
+            List<FlightPlan> f = null;
+            for (int i = 0; i < f.Count; i++)
+            {
+                //step 1. subset from  current datetime to initial(need to convert the string).
+                double diff = calculator.SubTime(f[i].Initial_Location.DateTime, relative_to);
+                //interpolsion-get the current point
+                Coordinate currentPlace = calculator.CurrentPlace(relative_to, f[i].Segments, diff);
+                flights.Add(new Flight(f[i].Id, currentPlace.Lng, currentPlace.Lat, f[i].Passengers, f[i].Company_Name, f[i].Initial_Location.DateTime, false));
+            }
             return flights;
         }
 
@@ -51,26 +52,8 @@ namespace FlightControlWeb.Controllers
             {
                 return "value";
             }
+    
 
-        // POST: api/Flights
-        [HttpPost]
-            public FlightPlan Post([FromBody] FlightPlan p)
-            {
-            // p.Id = 5;
-            // return CreatedAtAction(actionName: "GetItem", new { id = p.Id }, p);
-
-            //SQL part
-            Database databaseObject = new Database();
-            SQLCommands sql = new SQLCommands();
-           // sql.addPlan(p, databaseObject);
-            return p;
-            }
-  
-        // PUT: api/Flights/5
-        [HttpPut("{id}")]
-            public void Put(int id, [FromBody] string value)
-            {
-            }
 
             // DELETE: api/ApiWithActions/5
             [HttpDelete("{id}")]
