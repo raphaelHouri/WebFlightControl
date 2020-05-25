@@ -11,14 +11,14 @@ namespace FlightControlWeb.Models
         private string flight_id;
         private double longitude;
         private double latitude;
-        private int passengers;
+        private long passengers;
         private string company_name;
-        private string date_time;
+        private DateTime date_time;
         private bool is_external;
 
         [JsonConstructor]
         public Flight(string flight_id,double longitude, double latitude, 
-            int passengers, string company_name, string date_time, bool is_external)
+            long passengers, string company_name, DateTime date_time, bool is_external)
         {
             this.flight_id = flight_id;
             this.longitude = longitude;
@@ -42,7 +42,7 @@ namespace FlightControlWeb.Models
 
 
         [JsonProperty("passengers")]
-        public int Passengers { get; set; }
+        public long Passengers { get; set; }
         
 
         [JsonProperty("company_name")]
@@ -50,11 +50,10 @@ namespace FlightControlWeb.Models
         
         
         [JsonProperty("date_time")]
-        public string Date_time { get; set; }
+        public DateTime Date_time { get; set; }
         
         [JsonProperty("is_external")]
         public string Is_external { get; set; }
-
        
     }
 }

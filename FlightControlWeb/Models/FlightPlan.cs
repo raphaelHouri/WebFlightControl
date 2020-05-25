@@ -10,7 +10,9 @@ namespace FlightControlWeb
 
     public partial class FlightPlan
     {
- /*       public string Id { get; set; }*/
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
         [JsonProperty("passengers")]
         public long Passengers { get; set; }
 
@@ -70,6 +72,7 @@ namespace FlightControlWeb
             },
         };
     }
+    
 }
 
 
