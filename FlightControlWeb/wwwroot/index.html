@@ -17,7 +17,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
 
-
     <div id="drop-area">
         <form class="my-form">
             <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
@@ -69,7 +68,7 @@
             handleFiles(file)
         }
         function handleFiles(file) {
-            uploadFile(file)
+            readFile(file)
         }
 
         function preparePost(file) {
@@ -82,29 +81,32 @@
                 "body": todoAsStr
             }
         }
+
+        function readFile(file, i) {
+            let reader = new FileReader()
+            reader.readAsText(file);
+            let res;
+            reader.onload = function () {
+                //console.log(reader.result);
+                res = JSON.parse(reader.result);
+                uploadFile(res);
+            };
+
+            reader.onerror = function () {
+                console.log(reader.error);
+            };
+
+        }
+
         function uploadFile(file) {
-            let res = {
-                "passenger": 150,
-                "company_name": "SwissAir",
-                "initial_location": {
-                    "longitude": 20.0,
-                    "latitude": 30.2,
-                    "date_time": "2020-12-27T01:56:21Z"
-                },
-                "segments": [
-                    {
-                        "longitude": 33.23,
-                        "latitde": 31.56,
-                        "timespan_seconds": 850.0
-                    }
-                ]
-            }
-            let postOptions = preparePost(res)
+            let postOptions = preparePost(file)
+            console.log(postOptions);
             fetch("api/Flights", postOptions)
                 .then(response => response.json())
                 .then(appendItem)
                 .catch(error => console.log(error))
         }
+
         function appendItem(res) {
           /*  let todos = document.getElementById("t_list");
             let todoEl = document.createElement("li");
@@ -112,6 +114,15 @@
             todoEl.innerHTML = `${todo.name}`;
             todo.append(todoEl);*/
             console.log(res);
+        }
+        function hide() {
+            let x = document.getElementById("drop-area");
+            x.style.visibility === "hidden";     
+        }
+
+        function show() {
+            let x = document.getElementById("drop-area");
+            x.style.visibility === "visible";     
         }
 
     </script>

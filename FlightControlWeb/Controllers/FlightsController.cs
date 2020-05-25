@@ -22,11 +22,27 @@ namespace FlightControlWeb.Controllers
 
         //injection - we should get it in the constructor not new
         // private IProductManager flightManager = new ProductsManger();
-        // GET: api/Flights
+        // GET: api/Flights?relative_to=<DATE_TIME>
         [HttpGet]
-        public IEnumerable<FlightPlan> GetAllFlights()
+        public IEnumerable<Flight> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
         {
-            return null;
+            List<Flight> flights = new List<Flight>();
+            FlightCalculator calculator = new FlightCalculator();
+            FlightPlan f=null;
+            //interpolsion
+            //step 1. subset from  current datetime to initial(need to convert the string).
+            double diff = calculator.SubTime(f.Initial_Location.DateTime, relative_to);
+            //step 2. sum total time the flight take
+            double total = calculator.SumTimeSpan(f.Segments);
+            //step 3. divide the dattime from the total
+            double realtiveTime = diff / total;
+            //step 4. check the total distance in the flight
+            double totalDis = calculator.TotalDistance(f.Segments);
+            //step 5.mult the realtive time to the total distance
+            double longitude=1;
+            double latitde=1;
+            flights.Add(new Flight(f.Id, longitude, latitde, f.Passengers, f.Company_Name, f.Initial_Location.DateTime, false));
+            return flights;
         }
 
         // GET: api/Flights/5
@@ -46,7 +62,7 @@ namespace FlightControlWeb.Controllers
             //SQL part
             Database databaseObject = new Database();
             SQLCommands sql = new SQLCommands();
-            sql.addPlan(p, databaseObject);
+           // sql.addPlan(p, databaseObject);
             return p;
             }
   

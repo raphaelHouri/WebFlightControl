@@ -37,7 +37,7 @@ namespace FlightControlWeb
             myCommand.Parameters.AddWithValue("@start_time", statTimeString);
             myCommand.Parameters.AddWithValue("@end_time", endTimeString);
             myCommand.Parameters.AddWithValue("@company", flightPlan.Company_Name);
-            myCommand.Parameters.AddWithValue("@passengers", flightPlan.Passenger);
+            myCommand.Parameters.AddWithValue("@passengers", flightPlan.Passengers);
             int result = myCommand.ExecuteNonQuery();
             if (result > 0)
             {

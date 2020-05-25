@@ -1,5 +1,5 @@
 {
-    "passenger": 150,
+    "passengers": 150,
     "company_name": "SwissAir",
     "initial_location": {
         "longitude": 20.0,

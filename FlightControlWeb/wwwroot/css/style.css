@@ -15,12 +15,14 @@ a {
 }
 
 #drop-area {
+    visibility:visible;
     border: 2px dashed #ccc;
     border-radius: 20px;
     width: 480px;
     margin: 50px auto;
     padding: 20px;
 }
+
 
     #drop-area.highlight {
         border-color: purple;
