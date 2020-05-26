@@ -66,14 +66,26 @@ namespace FlightControlWeb.Models
             return index;
            
         }
-        public Coordinate CurrentPlace(string current,List<Segment> s,double diff)
+        public Coordinate CurrentPlace(string current,FlightPlan flightPlan,double diff)
         {
+            List<Segment> s = flightPlan.Segments;
             int findIndex = this.findIndexSegment(s, diff);
             //add condition if ifind=0;
-            double latStart = s[findIndex - 1].Latitude;
-            double longStart = s[findIndex - 1].Longitude;
-            double latEnd = s[findIndex].Latitude;
-            double longEnd = s[findIndex].Longitude;
+            double latStart, longStart, latEnd, longEnd;
+            if (findIndex == 0)
+            {
+                latStart = flightPlan.Initial_Location.Latitude;
+                longStart = flightPlan.Initial_Location.Longitude;
+                latEnd = s[findIndex].Latitude;
+                longEnd = s[findIndex].Longitude;
+            }
+            else
+            {
+                 latStart = s[findIndex - 1].Latitude;
+                 longStart = s[findIndex - 1].Longitude;
+                 latEnd = s[findIndex].Latitude;
+                 longEnd = s[findIndex].Longitude;
+            }
             //use divide line to parts equation 
             //find the time from the begin to the current in the spesfic segment
             double left = diff - SumTimeSpan(s, findIndex);

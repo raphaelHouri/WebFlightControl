@@ -8,6 +8,7 @@ namespace FlightControlWeb
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Text.Json.Serialization;
 
     public partial class FlightPlan
     {
@@ -40,14 +41,17 @@ namespace FlightControlWeb
 
     public partial class InitialLocation
     {
-
+        
         [JsonProperty("longitude")]
+        [JsonPropertyName("longitude")]
         public double Longitude { get; set; }
 
         [JsonProperty("latitude")]
+        [JsonPropertyName("latitude")]
         public double Latitude { get; set; }
 
         [JsonProperty("date_time")]
+        [JsonPropertyName("date_time")]
         public DateTime Date_Time { get; set; }
         public InitialLocation() { }
         public InitialLocation(double lng, double lat, DateTime date_time)
@@ -61,12 +65,15 @@ namespace FlightControlWeb
     public partial class Segment
     {
         [JsonProperty("longitude")]
+        [JsonPropertyName("longitude")]
         public double Longitude { get; set; }
 
         [JsonProperty("latitude")]
+        [JsonPropertyName("latitude")]
         public double Latitude { get; set; }
 
         [JsonProperty("timespan_seconds")]
+        [JsonPropertyName("timespan_seconds")]
         public double Timespan_Seconds { get; set; }
 
 

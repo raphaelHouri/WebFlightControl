@@ -47,7 +47,7 @@ namespace FlightControlWeb.Controllers
                 //step 1. subset from  current datetime to initial(need to convert the string).
                 double diff = calculator.SubTime(flightPlan.Initial_Location.Date_Time, relative_to);
                 //interpolsion-get the current point
-                Coordinate currentPlace = calculator.CurrentPlace(relative_to, flightPlan.Segments, diff);
+                Coordinate currentPlace = calculator.CurrentPlace(relative_to, flightPlan, diff);
                 flights.Add(new Flight(id, currentPlace.Lng, currentPlace.Lat, flightPlan.Passengers, flightPlan.Company_Name, flightPlan.Initial_Location.Date_Time, false));
             }
             return flights;
@@ -59,11 +59,11 @@ namespace FlightControlWeb.Controllers
         //    {
         //        return "value";
         //    }
-    
 
 
-            // DELETE: api/ApiWithActions/5
-            [HttpDelete("{id}")]
+
+        // DELETE: api/Flights/5
+        [HttpDelete("{id}")]
             public void Delete(string id)
             {
                 
