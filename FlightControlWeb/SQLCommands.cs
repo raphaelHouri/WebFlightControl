@@ -175,11 +175,10 @@ namespace FlightControlWeb
         }
         public FlightPlanDB flightsplanById(string id)
         {
-
+            Database databaseObject = new Database();
             InitialLocation initialLocation;
             FlightPlanDB flightPlanDB = null;
             FlightPlan flightPlan;
-            //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
             string query = $"SELECT * FROM Flight WHERE id = '{id}'";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
