@@ -41,6 +41,7 @@ namespace FlightControlWeb
             int result = myCommand.ExecuteNonQuery();
             if (result > 0)
             {
+                addListSegmet(flightPlan, id);
                 Console.WriteLine(result);
             }
             else
@@ -51,7 +52,7 @@ namespace FlightControlWeb
         }
 
         //add list of segment by id to the DB
-        public void addListSegmet(FlightPlan flightPlan, Database databaseObject, string id)
+        public void addListSegmet(FlightPlan flightPlan, string id)
         {
             int length = flightPlan.Segments.Count;
             for (int i = 0; i < length; i++)
@@ -185,7 +186,7 @@ namespace FlightControlWeb
         {   
 
             InitialLocation initialLocation;
-            FlightPlanDB flightPlanDB;
+            FlightPlanDB flightPlanDB =null;
             FlightPlan flightPlan;
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
             string query = $"SELECT * FROM Flight WHERE id = '{id}'";
