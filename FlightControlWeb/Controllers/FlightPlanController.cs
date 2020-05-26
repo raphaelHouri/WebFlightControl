@@ -14,10 +14,10 @@ namespace FlightControlWeb.Controllers
 
         // GET: api/FlightPlan/5
         [HttpGet("{id}", Name = "GetFlightPlan")]
-        public FlightPlan GetFlightPlan(string id)
+        public async Task<FlightPlan> GetFlightPlan(string id)
         {
             //find the flighplan in db
-            FlightPlan f=null;
+           FlightPlan f=null;
             return f;
         }
 

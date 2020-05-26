@@ -24,7 +24,7 @@ namespace FlightControlWeb.Controllers
         // private IProductManager flightManager = new ProductsManger();
         // GET: api/Flights?relative_to=<DATE_TIME>
         [HttpGet]
-        public IEnumerable<Flight> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
+        public async Task<IEnumerable<Flight>> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
         {
             bool checkSyncAll = Request.Query.ContainsKey("sync_all");
             if (checkSyncAll)
