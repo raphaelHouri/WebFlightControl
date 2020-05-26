@@ -19,12 +19,16 @@ namespace FlightControlWeb.Models
     {
 
         // subset from  current datetime to initial(need to convert the string).
-        public double SubTime(DateTime initial, string current) {
+        public double SubTime(DateTime startTime, string current) {
             DateTime currentD = this.ConvertStringToDateTime(current);
-            return 1;
+            TimeSpan span = currentD.Subtract(startTime);
+            double timeSpan = span.TotalSeconds;
+            return timeSpan;
             }
         public DateTime ConvertStringToDateTime(string time){
-            return new DateTime();
+            DateTime dt = DateTime.Parse(time);
+            dt = TimeZoneInfo.ConvertTimeToUtc(dt);
+            return dt;
             }
          // sum total time the flight take
         public double SumTimeSpan(List<Segment> segments,int index)
@@ -66,9 +70,9 @@ namespace FlightControlWeb.Models
         {
             int findIndex = this.findIndexSegment(s, diff);
             //add condition if ifind=0;
-            double latStart = s[findIndex - 1].Latitde;
+            double latStart = s[findIndex - 1].Latitude;
             double longStart = s[findIndex - 1].Longitude;
-            double latEnd = s[findIndex].Latitde;
+            double latEnd = s[findIndex].Latitude;
             double longEnd = s[findIndex].Longitude;
             //use divide line to parts equation 
             //find the time from the begin to the current in the spesfic segment
