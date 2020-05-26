@@ -5,15 +5,16 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class FlightPlanDb
+    public class FlightPlanDB
     {
         private FlightPlan flightPlan;
         private string id;
 
-        public FlightPlanDb(FlightPlan flightPlan,string id)
+        public FlightPlanDB(string id, FlightPlan flightPlan)
         {
-            this.flightPlan = flightPlan;
             this.id = id;
+            this.flightPlan = flightPlan;
+
         }
 
         public string GetId()

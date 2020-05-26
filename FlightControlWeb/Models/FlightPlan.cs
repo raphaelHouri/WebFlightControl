@@ -11,11 +11,10 @@ namespace FlightControlWeb
 
     public partial class FlightPlan
     {
-        [JsonProperty("id")]
-        public string Id { get; set; }
+
 
         [JsonProperty("passengers")]
-        public long Passengers { get; set; }
+        public int Passengers { get; set; }
 
         [JsonProperty("company_name")]
         public string Company_Name { get; set; }
@@ -25,10 +24,23 @@ namespace FlightControlWeb
 
         [JsonProperty("segments")]
         public List<Segment> Segments { get; set; }
+        public FlightPlan( )
+        {
+
+        } 
+        public FlightPlan( int passengers, string company_name, InitialLocation initial_location, List<Segment> segments)
+        {
+   
+            this.Passengers = passengers;
+            this.Company_Name = company_name;
+            this.Initial_Location = initial_location;
+            this.Segments = segments;
+        }
     }
 
     public partial class InitialLocation
     {
+
         [JsonProperty("longitude")]
         public double Longitude { get; set; }
 
@@ -37,6 +49,13 @@ namespace FlightControlWeb
 
         [JsonProperty("date_time")]
         public DateTime Date_Time { get; set; }
+        public InitialLocation() { }
+        public InitialLocation(double lng, double lat, DateTime date_time)
+        {
+            this.Longitude = lng;
+            this.Latitude = lat;
+            this.Date_Time = date_time;
+        }
     }
 
     public partial class Segment
@@ -44,20 +63,18 @@ namespace FlightControlWeb
         [JsonProperty("longitude")]
         public double Longitude { get; set; }
 
-        [JsonProperty("latitde")]
-        public double Latitde { get; set; }
+        [JsonProperty("latitude")]
+        public double Latitude { get; set; }
 
         [JsonProperty("timespan_seconds")]
         public double Timespan_Seconds { get; set; }
-        /*  private double longitude;
-        private double latitde;
-        private double timespan_seconds;*/
+
 
         public Segment() { }
         public Segment(double lng,double lat,double time)
         {
             this.Longitude = lng;
-            this.Latitde = lat;
+            this.Latitude = lat;
             this.Timespan_Seconds = time;
         }
         

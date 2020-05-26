@@ -34,12 +34,13 @@ namespace FlightControlWeb.Controllers
             //the list of flighs we will send to the cliet to update the markers
             List<Flight> flights = new List<Flight>();
             //we need to get from the db all the flight plan that are relvante
-            List<FlightPlanDb> f = null;
+            SQLCommands sql = new SQLCommands();
+            List<FlightPlanDB> flightList = sql.flightsList(relative_to);
 
-            for (int i = 0; i < f.Count; i++)
+            for (int i = 0; i < flightList.Count; i++)
             {
-                string id = f[i].GetId();
-                FlightPlan flightPlan = f[i].GetFlightPlan();
+                string id = flightList[i].GetId();
+                FlightPlan flightPlan = flightList[i].GetFlightPlan();
 
                 //step 1. subset from  current datetime to initial(need to convert the string).
                 double diff = calculator.SubTime(flightPlan.Initial_Location.Date_Time, relative_to);
@@ -51,18 +52,21 @@ namespace FlightControlWeb.Controllers
         }
 
         // GET: api/Flights/5
-        [HttpGet("{id}", Name = "Get")]
-            public string Get(int id)
-            {
-                return "value";
-            }
+        //[HttpGet("{id}", Name = "Get")]
+        //    public string Get(string id)
+        //    {
+        //        return "value";
+        //    }
     
 
 
             // DELETE: api/ApiWithActions/5
             [HttpDelete("{id}")]
-            public void Delete(int id)
+            public void Delete(string id)
             {
+                SQLCommands sql = new SQLCommands();
+                sql.deleteRow(id);
+
             }
 
 

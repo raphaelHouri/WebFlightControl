@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlightControlWeb.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Drawing;
@@ -10,20 +11,19 @@ namespace FlightControlWeb
 {
     public class SQLCommands
     {
-        public void addPlan(FlightPlan flightPlan, Database databaseObject)
+        private Database databaseObject = new Database();
+        //add plan to DB from the object we got from json
+        public void addPlan(FlightPlan flightPlan)
         {
-
             string id = createId();
-
             Coordinate coord = getEndCoors(flightPlan.Segments);
             DateTime endTime = getEndTime(flightPlan.Segments, flightPlan.Initial_Location.Date_Time);
 
-            //fix time to utc and creat string
-            DateTime statTime = TimeZone.CurrentTimeZone.ToUniversalTime(flightPlan.Initial_Location.Date_Time);
-            string statTimeString = statTime.ToString("f", DateTimeFormatInfo.InvariantInfo);
-            endTime = TimeZone.CurrentTimeZone.ToUniversalTime(endTime);
-            string endTimeString = endTime.ToString("f", DateTimeFormatInfo.InvariantInfo);
-            addListSegmet(flightPlan, databaseObject, id);
+            DateTime statTime = TimeZoneInfo.ConvertTimeToUtc(flightPlan.Initial_Location.Date_Time);
+            string statTimeString = statTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
+            endTime = TimeZoneInfo.ConvertTimeToUtc(endTime);
+            string endTimeString = endTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
+            
             ////// INSERT INTO DATABASE
             string query = "INSERT INTO Flight ('id', 'start_latitude','start_longitude','end_latitude','end_longitude','start_time','end_time', 'company', 'passengers') VALUES (@id, @start_latitude, @start_longitude, @end_latitude, @end_longitude ,@start_time, @end_time, @company, @passengers );";
 
@@ -48,14 +48,13 @@ namespace FlightControlWeb
                 Console.WriteLine(result);
             }
             databaseObject.CloseConnection();
-
-            //Console.WriteLine("Rows Added : {0}", result);
-
         }
+
+        //add list of segment by id to the DB
         public void addListSegmet(FlightPlan flightPlan, Database databaseObject, string id)
         {
             int length = flightPlan.Segments.Count;
-            for (int i=0;i<length;i++ )
+            for (int i = 0; i < length; i++)
             {
                 string query = "INSERT INTO Segments ('id', 'serial','longitude', 'latitude','timespan') VALUES (@id, @serial, @longitude, @latitude, @timespan );";
                 SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
@@ -65,7 +64,7 @@ namespace FlightControlWeb
                 myCommand.Parameters.AddWithValue("@id", id);
                 myCommand.Parameters.AddWithValue("@serial", i);
                 myCommand.Parameters.AddWithValue("@longitude", flightPlan.Segments[i].Longitude);
-                myCommand.Parameters.AddWithValue("@latitude", flightPlan.Segments[i].Latitde);
+                myCommand.Parameters.AddWithValue("@latitude", flightPlan.Segments[i].Latitude);
                 myCommand.Parameters.AddWithValue("@timespan", flightPlan.Segments[i].Timespan_Seconds);
                 int result = myCommand.ExecuteNonQuery();
                 if (result > 0)
@@ -81,8 +80,10 @@ namespace FlightControlWeb
             }
 
         }
-        public void deleteRow(string id, Database databaseObject)
+        //delete row details from the two table
+        public void deleteRow(string id)
         {
+
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
@@ -110,58 +111,110 @@ namespace FlightControlWeb
             }
             databaseObject.CloseConnection();
 
+     
         }
-        public void returnListPlans(string id, Database databaseObject)
+        //return list of segments
+        public List<Segment> segmentList(string id)
         {
-            string query = $"DELETE FROM Flight WHERE id = '{id}';";
-            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
-            int result = myCommand.ExecuteNonQuery();
-            if (result > 0)
-            {
-                Console.WriteLine(result);
-            }
-            else
-            {
-                Console.WriteLine(result);
-            }
-            databaseObject.CloseConnection();
-            query = $"DELETE FROM Segments WHERE id = '{id}';";
-            myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
-            result = myCommand.ExecuteNonQuery();
-            if (result > 0)
-            {
-                Console.WriteLine(result);
-            }
-            else
-            {
-                Console.WriteLine(result);
-            }
-            databaseObject.CloseConnection();
-
-        }
-        public List<Coordinate> segmentList(string id, Database databaseObject)
-        {
-
+            Segment segment;
             // SELECT FROM DATABASE
-            string query = "SELECT * FROM Segmaents  WHERE id = 1 ORDER BY serial ASC;";
+
+            string query = $"SELECT * FROM Segments WHERE id = '{id}'  ORDER BY serial ASC;";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
             // Creating a List of coordinate 
-            List<Coordinate> segmentList = new List<Coordinate>();
+            List<Segment> segmentList = new List<Segment>();
             if (result.HasRows)
             {
                 while (result.Read())
                 {
 
-                    segmentList.Add(new Coordinate( Convert.ToDouble($"{result["longitude"]}"), Convert.ToDouble($"{result["latitude"]}")));
-
+                    segment = new Segment(Convert.ToDouble($"{result["longitude"]}"), Convert.ToDouble($"{result["latitude"]}"), Convert.ToDouble($"{result["timespan"]}"));
+                    segmentList.Add(segment);
                 }
             }
             databaseObject.CloseConnection();
             return segmentList;
+
+        }
+        // return all flight plans in the current time
+         public List<FlightPlanDB> flightsList(string time)
+        {   //SQL part
+            List<FlightPlanDB> flightsList = new List<FlightPlanDB>();
+            //InitialLocation initialLocation;
+            FlightPlanDB flightPlanDB;
+            //FlightPlan flightPlan;
+            //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
+            string query = $"SELECT * FROM Flight WHERE ('{time}'> start_time) AND ('{time}' < end_time)";
+ 
+            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            SQLiteDataReader result = myCommand.ExecuteReader();
+            // Creating a List of integers 
+
+            if (result.HasRows)
+            {
+
+                while (result.Read())
+                {
+                    //get id 
+                    string id = $"{result["id"]}";
+
+                    flightPlanDB = flightsplanById(id);
+                    //string company = $"{result["company"]}";
+                    //int passenger = Convert.ToInt32($"{result["passengers"]}");
+
+                    ////create initial location
+                    //initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_latitude"]}"),Convert.ToDouble($"{result["start_longitude"]}"), fromStringToDate($"{result["start_time"]}"));
+                    ////create flightplan
+                    //flightPlan=new FlightPlan(passenger, company ,initialLocation,segmentList(id));
+
+
+                    //flightPlanDB = new FlightPlanDB(id, flightPlan);
+                    flightsList.Add(flightPlanDB);
+                }
+            }
+            databaseObject.CloseConnection();
+
+
+            return flightsList;
+
+        } 
+        public FlightPlanDB flightsplanById(string id)
+        {   
+
+            InitialLocation initialLocation;
+            FlightPlanDB flightPlanDB;
+            FlightPlan flightPlan;
+            //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
+            string query = $"SELECT * FROM Flight WHERE id = '{id}'";
+ 
+            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            SQLiteDataReader result = myCommand.ExecuteReader();
+            // Creating a List of integers 
+
+            if (result.HasRows)
+            {
+
+                while (result.Read())
+                {
+                    string company = $"{result["company"]}";
+                    int passenger = Convert.ToInt32($"{result["passengers"]}");
+                    //create initial location
+                    initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_latitude"]}"),Convert.ToDouble($"{result["start_longitude"]}"), fromStringToDate($"{result["start_time"]}"));
+                    //create flightplan
+                    flightPlan=new FlightPlan(passenger, company ,initialLocation,segmentList(id));
+
+                    flightPlanDB = new FlightPlanDB(id, flightPlan);
+
+                }
+            }
+            databaseObject.CloseConnection();
+
+
+            return flightPlanDB;
 
         }
 
@@ -175,10 +228,10 @@ namespace FlightControlWeb
         public Coordinate getEndCoors(List<Segment> seg)
         {
             int lastSegIndex = seg.Count - 1;
-            Coordinate coord = new Coordinate(seg[lastSegIndex].Latitde, seg[lastSegIndex].Latitde);
+            Coordinate coord = new Coordinate(seg[lastSegIndex].Latitude, seg[lastSegIndex].Latitude);
             return coord;
         }
-        public DateTime getEndTime(List<Segment>seg, DateTime startTime)  
+        public DateTime getEndTime(List<Segment> seg, DateTime startTime)
         {
             double sumSeconds = 0;
             foreach (Segment item in seg)
@@ -186,14 +239,19 @@ namespace FlightControlWeb
                 sumSeconds += item.Timespan_Seconds;
             }
             return startTime.AddSeconds(sumSeconds);
-            //for (int i=0 ; i < seg.Length; i++)
-            //{
-            //    sumSeconds += seg[i].Timespan_Seconds;
-            //}
-            //return startTime.AddSeconds(sumSeconds);
 
         }
+        public DateTime fromStringToDate(string time)
+        {
 
+            DateTime dt = DateTime.Parse(time);
+            dt = TimeZoneInfo.ConvertTimeToUtc(dt);
+
+            return dt;
+        }
 
     }
+
+
+
 }

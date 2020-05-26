@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,14 +12,16 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
+        //SQL part
+        private SQLCommands sql = new SQLCommands();
 
         // GET: api/FlightPlan/5
         [HttpGet("{id}", Name = "GetFlightPlan")]
-        public async Task<FlightPlan> GetFlightPlan(string id)
+        public FlightPlan GetFlightPlan(string id)
         {
             //find the flighplan in db
-           FlightPlan f=null;
-            return f;
+            FlightPlan flightPlan= sql.flightsplanById(id).GetFlightPlan();
+            return flightPlan;
         }
 
         // POST: api/FlightPlan
@@ -28,10 +31,7 @@ namespace FlightControlWeb.Controllers
             // p.Id = 5;
             // return CreatedAtAction(actionName: "GetItem", new { id = p.Id }, p);
 
-            //SQL part
-            Database databaseObject = new Database();
-            SQLCommands sql = new SQLCommands();
-            sql.addPlan(p, databaseObject);
+            sql.addPlan(p);
             return p;
         }
 
