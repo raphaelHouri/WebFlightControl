@@ -23,7 +23,7 @@ namespace FlightControlWeb
             string statTimeString = statTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
             endTime = TimeZoneInfo.ConvertTimeToUtc(endTime);
             string endTimeString = endTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
-            
+
             ////// INSERT INTO DATABASE
             string query = "INSERT INTO Flight ('id', 'start_latitude','start_longitude','end_latitude','end_longitude','start_time','end_time', 'company', 'passengers') VALUES (@id, @start_latitude, @start_longitude, @end_latitude, @end_longitude ,@start_time, @end_time, @company, @passengers );";
 
@@ -112,7 +112,7 @@ namespace FlightControlWeb
             }
             databaseObject.CloseConnection();
 
-     
+
         }
         //return list of segments
         public List<Segment> segmentList(string id)
@@ -124,7 +124,7 @@ namespace FlightControlWeb
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
-            // Creating a List of coordinate 
+            // Creating a List of coordinate
             List<Segment> segmentList = new List<Segment>();
             if (result.HasRows)
             {
@@ -140,39 +140,30 @@ namespace FlightControlWeb
 
         }
         // return all flight plans in the current time
-         public List<FlightPlanDB> flightsList(string time)
+        public List<FlightPlanDB> flightsList(string time)
         {   //SQL part
             List<FlightPlanDB> flightsList = new List<FlightPlanDB>();
+            Database databaseObject = new Database();
             //InitialLocation initialLocation;
             FlightPlanDB flightPlanDB;
             //FlightPlan flightPlan;
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
             string query = $"SELECT * FROM Flight WHERE ('{time}'> start_time) AND ('{time}' < end_time)";
- 
+
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
-            // Creating a List of integers 
+            // Creating a List of integers
 
             if (result.HasRows)
             {
 
                 while (result.Read())
                 {
-                    //get id 
+                    //get id
                     string id = $"{result["id"]}";
 
                     flightPlanDB = flightsplanById(id);
-                    //string company = $"{result["company"]}";
-                    //int passenger = Convert.ToInt32($"{result["passengers"]}");
-
-                    ////create initial location
-                    //initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_latitude"]}"),Convert.ToDouble($"{result["start_longitude"]}"), fromStringToDate($"{result["start_time"]}"));
-                    ////create flightplan
-                    //flightPlan=new FlightPlan(passenger, company ,initialLocation,segmentList(id));
-
-
-                    //flightPlanDB = new FlightPlanDB(id, flightPlan);
                     flightsList.Add(flightPlanDB);
                 }
             }
@@ -181,21 +172,20 @@ namespace FlightControlWeb
 
             return flightsList;
 
-        } 
+        }
         public FlightPlanDB flightsplanById(string id)
-        {   
+        {
 
             InitialLocation initialLocation;
-            FlightPlanDB flightPlanDB =null;
+            FlightPlanDB flightPlanDB = null;
             FlightPlan flightPlan;
-            Database databaseObject = new Database();
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
             string query = $"SELECT * FROM Flight WHERE id = '{id}'";
- 
+
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
-            // Creating a List of integers 
+            // Creating a List of integers
 
             if (result.HasRows)
             {
@@ -205,9 +195,9 @@ namespace FlightControlWeb
                     string company = $"{result["company"]}";
                     int passenger = Convert.ToInt32($"{result["passengers"]}");
                     //create initial location
-                    initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_latitude"]}"),Convert.ToDouble($"{result["start_longitude"]}"), fromStringToDate($"{result["start_time"]}"));
+                    initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_latitude"]}"), Convert.ToDouble($"{result["start_longitude"]}"), fromStringToDate($"{result["start_time"]}"));
                     //create flightplan
-                    flightPlan=new FlightPlan(passenger, company ,initialLocation,segmentList(id));
+                    flightPlan = new FlightPlan(passenger, company, initialLocation, segmentList(id));
 
                     flightPlanDB = new FlightPlanDB(id, flightPlan);
 
@@ -251,6 +241,87 @@ namespace FlightControlWeb
 
             return dt;
         }
+
+
+
+        //server table
+        public void addServer(Server server)
+        {
+
+
+            ////// INSERT INTO DATABASE
+            string query = "INSERT INTO Servers ('id', 'url') VALUES (@server.ServerId, @server.ServerUrl);";
+
+            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            myCommand.Parameters.AddWithValue("@id", server.ServerId);
+            myCommand.Parameters.AddWithValue("@url", server.ServerUrl);
+
+            int result = myCommand.ExecuteNonQuery();
+            if (result > 0)
+            {
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Console.WriteLine(result);
+            }
+            databaseObject.CloseConnection();
+        }
+
+
+        public void deleteServer(string id)
+        {
+
+            string query = $"DELETE FROM Servers WHERE id = '{id}';";
+            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            int result = myCommand.ExecuteNonQuery();
+            if (result > 0)
+            {
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Console.WriteLine(result);
+            }
+            databaseObject.CloseConnection();
+        }
+        public List<Server> ServerList()
+        {   //SQL part
+            List<Server> ServerList = new List<Server>();
+            Server server = null;
+            Database databaseObject = new Database();
+            string query = $"SELECT * FROM Servers";
+
+            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            SQLiteDataReader result = myCommand.ExecuteReader();
+            // Creating a List of integers
+
+            if (result.HasRows)
+            {
+
+                while (result.Read())
+                {
+                    //get id
+                    string id = $"{result["id"]}";
+                    string url = $"{result["url"]}";
+
+                    server = new Server(id, url);
+                    ServerList.Add(server);
+                }
+            }
+            databaseObject.CloseConnection();
+
+
+            return ServerList;
+
+        }
+
+
+
+
 
     }
 

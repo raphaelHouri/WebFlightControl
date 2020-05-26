@@ -25,6 +25,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}", Name = "GetServer")]
         public string GetServer(int id)
         {
+
             return "value";
         }*/
 
