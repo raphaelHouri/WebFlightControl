@@ -188,6 +188,7 @@ namespace FlightControlWeb
             InitialLocation initialLocation;
             FlightPlanDB flightPlanDB=null;
             FlightPlan flightPlan;
+            Database databaseObject = new Database();
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
             string query = $"SELECT * FROM Flight WHERE id = '{id}'";
  
