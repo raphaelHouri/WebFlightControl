@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Drag and Drop</title>
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="https://cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
+
+    <div id="drop-area">
+        <form class="my-form">
+            <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
+            <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+            <label class="button" for="fileElem">Select some files</label>
+        </form>
+        <progress id="progress-bar" max=100 value=0></progress>
+        <div id="gallery" />
+    </div>
+
+    <script>
+        // ************************ Drag and drop ***************** //
+        let dropArea = document.getElementById("drop-area")
+
+            // Prevent default drag behaviors
+            ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false)
+                document.body.addEventListener(eventName, preventDefaults, false)
+            })
+
+            // Highlight drop area when item is dragged over it
+            ;['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false)
+            })
+
+            ;['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false)
+            })
+
+        // Handle dropped files
+        dropArea.addEventListener('drop', handleDrop, false)
+
+        function preventDefaults(e) {
+            e.preventDefault()
+            e.stopPropagation()
+        }
+
+        function highlight(e) {
+            dropArea.classList.add('highlight')
+        }
+
+        function unhighlight(e) {
+            dropArea.classList.remove('active')
+        }
+
+        function handleDrop(e) {
+            var dt = e.dataTransfer
+            var file = dt.files[0];
+            handleFiles(file)
+        }
+        function handleFiles(file) {
+            readFile(file)
+        }
+
+        function preparePost(file) {
+            //from obect to string
+
+            let todoAsStr = JSON.stringify(file);
+            return {
+                "method": "POST",
+                "headers": { 'Content-Type': 'application/json' },
+                "body": todoAsStr
+            }
+        }
+
+        async function readFile(file, i) {
+            let reader = new FileReader()
+            reader.readAsText(file);
+            let res;
+            reader.onload = function () {
+                //console.log(reader.result);
+                res = JSON.parse(reader.result);
+                uploadFile(res);
+            };
+
+            reader.onerror = function () {
+                console.log(reader.error);
+            };
+
+        }
+
+        async function uploadFile(file) {
+            let postOptions = preparePost(file)
+            console.log(postOptions);
+            await fetch("api/FlightPlan", postOptions)
+                .then(response => response.json())
+                .then(appendItem)
+                .catch(error => console.log(error))
+        }
+
+        function appendItem(res) {
+          /*  let todos = document.getElementById("t_list");
+            let todoEl = document.createElement("li");
+            todoEl.id = todo.id;
+            todoEl.innerHTML = `${todo.name}`;
+            todo.append(todoEl);*/
+            console.log(res);
+        }
+        function hide() {
+            let x = document.getElementById("drop-area");
+            x.style.visibility === "hidden";     
+        }
+
+        function show() {
+            let x = document.getElementById("drop-area");
+            x.style.visibility === "visible";     
+        }
+
+    </script>
+
+
+</body>
+
+</html>
+
