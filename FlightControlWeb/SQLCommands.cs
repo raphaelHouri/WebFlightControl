@@ -11,7 +11,7 @@ namespace FlightControlWeb
 {
     public class SQLCommands
     {
-        private Database databaseObject = new Database();
+        private Database databaseObject = Database.Instance;
         //add plan to DB from the object we got from json
         public void addPlan(FlightPlan flightPlan)
         {
