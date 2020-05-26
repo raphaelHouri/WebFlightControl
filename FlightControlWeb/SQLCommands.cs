@@ -250,7 +250,7 @@ namespace FlightControlWeb
 
         //    Database databaseObject = new Database();
             ////// INSERT INTO DATABASE
-            string query = "INSERT INTO Servers ('id', 'url') VALUES (@server.ServerId, @server.ServerUrl);";
+            string query = "INSERT INTO Servers ('id', 'url') VALUES (@id, @url);";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
