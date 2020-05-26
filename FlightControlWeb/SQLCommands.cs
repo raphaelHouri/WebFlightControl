@@ -11,7 +11,6 @@ namespace FlightControlWeb
 {
     public class SQLCommands
     {
-       // private Database databaseObject = Database.Instance;
         private Database databaseObject = new Database();
         //add plan to DB from the object we got from json
         public void addPlan(FlightPlan flightPlan)
@@ -42,6 +41,7 @@ namespace FlightControlWeb
             int result = myCommand.ExecuteNonQuery();
             if (result > 0)
             {
+                addListSegmet(flightPlan, id);
                 Console.WriteLine(result);
             }
             else
@@ -52,7 +52,7 @@ namespace FlightControlWeb
         }
 
         //add list of segment by id to the DB
-        public void addListSegmet(FlightPlan flightPlan, Database databaseObject, string id)
+        public void addListSegmet(FlightPlan flightPlan, string id)
         {
             int length = flightPlan.Segments.Count;
             for (int i = 0; i < length; i++)
@@ -186,7 +186,7 @@ namespace FlightControlWeb
         {   
 
             InitialLocation initialLocation;
-            FlightPlanDB flightPlanDB=null;
+            FlightPlanDB flightPlanDB =null;
             FlightPlan flightPlan;
             Database databaseObject = new Database();
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
