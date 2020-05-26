@@ -12,12 +12,12 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class ServersController : ControllerBase
     {
-        //list of the servers the server sync with
-        private List<Server> syncServers = new List<Server>();
+        private SQLCommands sql = new SQLCommands();
         // GET: api/Servers
         [HttpGet]
         public IEnumerable<Server> Get()
         {
+            List<Server> syncServers = sql.ServerList();
             return syncServers;
         }
 
@@ -31,9 +31,10 @@ namespace FlightControlWeb.Controllers
 
         // POST: api/Servers
         [HttpPost]
-        public void Post([FromBody] Server server)
+        public Server Post([FromBody] Server server)
         {
-            this.syncServers.Add(server);
+            sql.addServer(server);
+            return server;
         }
 
 
@@ -42,6 +43,7 @@ namespace FlightControlWeb.Controllers
         public void Delete(string id)
         {
             //remove it from db
+            sql.deleteServer(id);
         }
     }
 }

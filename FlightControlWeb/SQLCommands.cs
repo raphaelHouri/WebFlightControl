@@ -248,7 +248,7 @@ namespace FlightControlWeb
         public void addServer(Server server)
         {
 
-
+        //    Database databaseObject = new Database();
             ////// INSERT INTO DATABASE
             string query = "INSERT INTO Servers ('id', 'url') VALUES (@server.ServerId, @server.ServerUrl);";
 

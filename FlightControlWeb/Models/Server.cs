@@ -17,6 +17,7 @@ namespace FlightControlWeb.Models
         public string ServerUrl { get; set; }
        
         [JsonConstructor]
+        public Server() { }
         public Server(string serverId,String serverUrl)
         {
             this.ServerId = serverId;
