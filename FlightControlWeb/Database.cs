@@ -7,10 +7,10 @@ using System.IO;
 
 namespace FlightControlWeb
 {
-    public sealed class Database
+    public  class Database
     {
-        private static Database instance = null;
-        private static readonly object padlock = new object();
+        /*private static Database instance = null;
+        private static readonly object padlock = new object();*/
         public SQLiteConnection myConnection;
         public Database()
         {
@@ -22,7 +22,7 @@ namespace FlightControlWeb
             }
         }
 
-        public static Database Instance
+   /*     public static Database Instance
         {
             get
             {
@@ -35,7 +35,7 @@ namespace FlightControlWeb
                     return instance;
                 }
             }
-        }
+        }*/
         public void OpenConnection()
         {
             if (myConnection.State != System.Data.ConnectionState.Open)

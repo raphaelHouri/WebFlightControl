@@ -11,7 +11,8 @@ namespace FlightControlWeb
 {
     public class SQLCommands
     {
-        private Database databaseObject = Database.Instance;
+       // private Database databaseObject = Database.Instance;
+        private Database databaseObject = new Database();
         //add plan to DB from the object we got from json
         public void addPlan(FlightPlan flightPlan)
         {
@@ -185,7 +186,7 @@ namespace FlightControlWeb
         {   
 
             InitialLocation initialLocation;
-            FlightPlanDB flightPlanDB;
+            FlightPlanDB flightPlanDB=null;
             FlightPlan flightPlan;
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
             string query = $"SELECT * FROM Flight WHERE id = '{id}'";

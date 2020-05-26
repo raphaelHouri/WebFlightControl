@@ -16,11 +16,13 @@ namespace FlightControlWeb.Controllers
         private SQLCommands sql = new SQLCommands();
 
         // GET: api/FlightPlan/5
+        //xqxa4706KL
         [HttpGet("{id}", Name = "GetFlightPlan")]
         public FlightPlan GetFlightPlan(string id)
         {
             //find the flighplan in db
-            FlightPlan flightPlan= sql.flightsplanById(id).GetFlightPlan();
+            FlightPlanDB flightPlanDB = sql.flightsplanById(id);
+            FlightPlan flightPlan= flightPlanDB.GetFlightPlan();
             return flightPlan;
         }
 
