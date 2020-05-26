@@ -10,21 +10,20 @@ namespace FlightControlWeb.Models
     public class Server
     {
 
-        private string serverId;
-        private string serverUrl;
+        [JsonProperty("ServerId")]
+        public string ServerId { get; set; }
 
+        [JsonProperty("ServerURL")]
+        public string ServerUrl { get; set; }
+       
         [JsonConstructor]
         public Server(string serverId,String serverUrl)
         {
-            this.serverId = serverId;
-            this.serverUrl = serverUrl;
+            this.ServerId = serverId;
+            this.ServerUrl = serverUrl;
         }
 
-        [JsonProperty("serverId")]
-        public string ServerId { get; set; }
-        
-        [JsonProperty("serverUrl")]
-        public string ServerUrl { get; set; }
+      
     }
 
 }

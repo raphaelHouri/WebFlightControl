@@ -19,12 +19,14 @@ namespace FlightControlWeb.Controllers
     public class FlightsController : ControllerBase
     {
         private FlightCalculator calculator = new FlightCalculator();
+        //SQL part
+        private SQLCommands sql = new SQLCommands();
 
         //injection - we should get it in the constructor not new
         // private IProductManager flightManager = new ProductsManger();
         // GET: api/Flights?relative_to=<DATE_TIME>
         [HttpGet]
-        public IEnumerable<Flight> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
+        public async Task<IEnumerable<Flight>> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
         {
             bool checkSyncAll = Request.Query.ContainsKey("sync_all");
             if (checkSyncAll)
@@ -34,7 +36,7 @@ namespace FlightControlWeb.Controllers
             //the list of flighs we will send to the cliet to update the markers
             List<Flight> flights = new List<Flight>();
             //we need to get from the db all the flight plan that are relvante
-            SQLCommands sql = new SQLCommands();
+          
             List<FlightPlanDB> flightList = sql.flightsList(relative_to);
 
             for (int i = 0; i < flightList.Count; i++)
@@ -64,7 +66,7 @@ namespace FlightControlWeb.Controllers
             [HttpDelete("{id}")]
             public void Delete(string id)
             {
-                SQLCommands sql = new SQLCommands();
+                
                 sql.deleteRow(id);
 
             }
