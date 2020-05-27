@@ -68,7 +68,7 @@ let dropArea = document.getElementById("drop-visible-area")
             }
         }
 
-        function readFile(file, i) {
+        function  readFile(file, i) {
         let reader = new FileReader()
             reader.readAsText(file);
             let res;
@@ -84,10 +84,10 @@ let dropArea = document.getElementById("drop-visible-area")
 
         }
 
-        function uploadFile(file) {
+        async function uploadFile(file) {
         let postOptions = preparePost(file)
             console.log(postOptions);
-            fetch("api/FlightPlan", postOptions)
+            await fetch("api/FlightPlan", postOptions)
                 .then(response => response.json())
                 .then(appendItem)
                 .catch(error => console.log(error))
