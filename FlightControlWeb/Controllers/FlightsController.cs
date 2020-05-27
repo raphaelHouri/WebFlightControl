@@ -33,7 +33,7 @@ namespace FlightControlWeb.Controllers
             if (checkSyncAll)
             {
                 //need to get flights from out servers
-                List<Flight> exFlights = externalFlights.GetExternalFlights(relative_to);
+                List<Flight> exFlights = await externalFlights.GetExternalFlights(relative_to);
                 exFlights = externalFlights.changeBoolEX(exFlights);
                 flights.AddRange(exFlights);
             }
