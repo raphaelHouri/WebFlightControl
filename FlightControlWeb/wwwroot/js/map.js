@@ -38,10 +38,11 @@ function initMap() {
 
 
 
+
     // Add Marker Function
     function addMarker(props) {
         let marker = new google.maps.Marker({
-            position: new coordinate(props.initial_location.longitude, props.initial_location.latitude),
+            position: new coordinate(props.longitude, props.latitude),
             map: map
         });
 
@@ -52,7 +53,7 @@ function initMap() {
 
         // Check content
         let infoWindow = new google.maps.InfoWindow({
-            content: `${props.id} ${props.company_name}`,
+            content: `${props.flight_id} ${ props.company_name }`,
             object: props
         });
         //click event after press the map
@@ -65,6 +66,10 @@ function initMap() {
 
     }
     function showTable(user) {
+
+
+
+
         let dateLanding = getEndTime(user.segments, user.initial_location.date_time);
         let segLength = user.segments.length;
         let output = '<div>Flights:</div>';
@@ -97,18 +102,95 @@ function initMap() {
 
 }
 
+//function getAllFlight() {
+
+//    fetch("https://localhost:44300/api/Flights?relative_to=2020-12-27 01:56:22Z")
+//        .then(result => {
+//            // console.log(result);
+//            return result.json();
+//        })
+//        .then((data) => {
+//            //            let output = '<h2>User</h2>';
+//            let outputMyFlight =
+//                `<div class="item clearfix">
+//                            <div class="item__description" ><h6>ID</h6></div>
+                            
+//                            <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
+//                            <div class="right clearfix">
+//                            </div>
+//                    </div>
+//                   </div>`;
+//            let outputExFlight =
+//                `<div class="item clearfix">
+//                            <div class="item__description" ><h6>ID</h6></div>
+                            
+//                            <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
+//                            <div class="right clearfix">
+//                            </div>
+//                    </div>
+//                   </div>`;
 
 
+//            markers = data;
+//            initMap();
+//            data.forEach(function (user) {
 
-document.getElementById('getUsers').addEventListener('click', getUsers);
-function getUsers() {
+//                console.log(user);
 
-    fetch('json.json')
-        .then((res) => res.json())
-        .then((data) => {
+//                if (!user.is_external) {
+//                    outputMyFlight +=
+//                        `<div class="item clearfix">
+//                            <div class="item__description" >${user.flight_id}</div>
+                            
+//                            <div class="item__description" style="text-indent :1em">${user.company_name}</div>
+//                            <div class="right clearfix">
+//                                <div class="item__delete" style="text-indent :1em">
+//                                    <button class="item__delete--btn" onClick="reply_click(${user.flight_id})"><i class="ion-ios-close-outline"></i></button>
+//                                </div>
+//                            </div>
+//                    </div>
+//                   </div>`;
+
+
+//                } else {
+//                    outputExFlight +=
+//                        ` <div class="item clearfix" id="${user.flight_id}">
+//                            <div class="item__description">${user.flight_id}</div>
+//                            <div class="item__description" style="text-indent :1em">${user.company_name}</div>
+//                        </div>
+//                       </div>`;
+
+//                }
+
+
+//            });
+
+
+//            document.getElementById('outputMyFlight').innerHTML = outputMyFlight;
+//            document.getElementById('outputExFlight').innerHTML = outputExFlight;
+//        })
+//        .catch(error => console.log(error));
+//}
+
+function getAllFlight() {
+    fetch("https://localhost:44300/api/Flights?relative_to=2020-12-27 01:56:22Z")
+        .then(result => {
+            
+            return result.json();
+        })
+        .then(data => {
+            console.log(data);
+            addDetailsFlights(data);
+        })
+        .catch(error => console.log(error));
+}
+
+
+function addDetailsFlights(data) {
+
             //            let output = '<h2>User</h2>';
             let outputMyFlight =
-                 `<div class="item clearfix">
+                `<div class="item clearfix">
                             <div class="item__description" ><h6>ID</h6></div>
                             
                             <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
@@ -125,7 +207,7 @@ function getUsers() {
                             </div>
                     </div>
                    </div>`;
-                 
+
 
             markers = data;
             initMap();
@@ -133,15 +215,15 @@ function getUsers() {
 
                 console.log(user);
 
-                if (user.myFlight == 1) {
+                if (!user.is_external) {
                     outputMyFlight +=
-                        `<div class="item clearfix">
-                            <div class="item__description" >${user.id}</div>
+                        `<div class="item clearfix" id="${user.flight_id}">
+                            <div class="item__description" >${user.flight_id}</div>
                             
                             <div class="item__description" style="text-indent :1em">${user.company_name}</div>
                             <div class="right clearfix">
                                 <div class="item__delete" style="text-indent :1em">
-                                    <button class="item__delete--btn" onClick="reply_click(${user.id})"><i class="ion-ios-close-outline"></i></button>
+                                    <button class="item__delete--btn" onClick="reply_click('${user.flight_id}')"><i class="ion-ios-close-outline"></i></button>
                                 </div>
                             </div>
                     </div>
@@ -150,27 +232,44 @@ function getUsers() {
 
                 } else {
                     outputExFlight +=
-                        ` <div class="item clearfix" id="${user.id}">
-                            <div class="item__description">${user.id}</div>
+                        ` <div class="item clearfix" id="${user.flight_id}">
+                            <div class="item__description">${user.flight_id}</div>
                             <div class="item__description" style="text-indent :1em">${user.company_name}</div>
                         </div>
                        </div>`;
-
                 }
-
-
             });
-
-            console.log(output);
-            console.log(outputMyFlight);
-            console.log(outputExFlight);
-
             document.getElementById('outputMyFlight').innerHTML = outputMyFlight;
             document.getElementById('outputExFlight').innerHTML = outputExFlight;
-        })
 }
-function reply_click(clicked_id) {
-    alert(clicked_id);
+
+getAllFlight();
+
+
+////document.getElementById('getUsers').addEventListener('click', getUsers);
+//function getUsers() {
+
+//    fetch('json.json')
+//        .then((res) => res.json())
+
+//}
+function reply_click(id) {
+
+
+    fetch('https://localhost:44300/api/Flights/'+ id, {
+        method: 'DELETE',
+        body: id
+    }).then(result => {
+            alert(id + ' delete from DB');
+            let myobj = document.getElementById(id);
+            myobj.remove();
+            initMap();
+        })
+        .catch(error => {
+            alert(error);
+
+        });
+
 
 }
 function getEndTime(seg, startTime) {
