@@ -48,8 +48,30 @@ namespace FlightControlWeb.Models
             long passengers, string company_name, DateTime date_time, bool is_external)
         {
             this.Flight_id = flight_id;
-            this.Longitude = longitude;
-            this.Latitude = latitude;
+            if (longitude > 180)
+            {
+                longitude = 180;
+            }
+            else if (longitude<-180)
+            {
+                longitude = -180;
+            }
+            else
+            {
+                this.Longitude = longitude;
+            }
+            if (latitude > 90)
+            {
+                latitude = 90;
+            }
+            else if (latitude < -90)
+            {
+                latitude = -90;
+            }
+            else
+            {
+                this.Latitude = latitude;
+            }
             this.Passengers = passengers;
             this.Company_name = company_name;
             this.Date_time = date_time;
