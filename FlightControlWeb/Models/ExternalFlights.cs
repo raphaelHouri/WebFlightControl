@@ -12,15 +12,15 @@ namespace FlightControlWeb.Models
 {
     public class ExternalFlights
     {
-        public FlightPlan GetExternalFlightById(string id)
+        public async Task<FlightPlan> GetExternalFlightById(string id)
         {
-            FlightPlan flightPlan= null;
+            FlightPlan flightPlan = null;
             // List<FlightPlan> ex = new List<FlightPlan>();
             //Get
             //api/FlightPlan/" + id;
             SQLCommands commands = new SQLCommands();
             List<Server> ourServers = commands.ServerList();
-            foreach(Server server in ourServers)
+            foreach (Server server in ourServers)
             {
                 string idFlight = id;
                 string urlServer = server.ServerUrl;
@@ -29,8 +29,8 @@ namespace FlightControlWeb.Models
                 string strurltest = String.Format(serverApi);
                 WebRequest requestObjGet = WebRequest.Create(strurltest);
                 requestObjGet.Method = "GET";
-                HttpWebResponse responseObjGet = null;
-                responseObjGet = (HttpWebResponse)requestObjGet.GetResponse();
+                WebResponse responseObjGet = null;
+                responseObjGet = await requestObjGet.GetResponseAsync();
                 string strresulttest = null;
                 using (Stream stream = responseObjGet.GetResponseStream())
                 {
@@ -39,12 +39,12 @@ namespace FlightControlWeb.Models
                     sr.Close();
                 }
                 flightPlan = JsonConvert.DeserializeObject<FlightPlan>(strresulttest);
-                
+
             }
-           
+
             return flightPlan;
         }
-         public List<Flight> GetExternalFlights(string time)
+        public async Task<List<Flight>> GetExternalFlights(string time)
         {
             List<Flight> ex = null;
             // List<FlightPlan> ex = new List<FlightPlan>();
@@ -52,17 +52,17 @@ namespace FlightControlWeb.Models
             //api/FlightPlan/" + id;
             SQLCommands commands = new SQLCommands();
             List<Server> ourServers = commands.ServerList();
-            foreach(Server server in ourServers)
+            foreach (Server server in ourServers)
             {
-                string date_time =time;
+                string date_time = time;
                 string urlServer = server.ServerUrl;
                 string serverApi = urlServer + "/api/Flights?relative_to=" + date_time;
                 //string strurltest = String.Format("https://jsonplaceholder.typicode.com/posts/1/comments");
                 string strurltest = String.Format(serverApi);
                 WebRequest requestObjGet = WebRequest.Create(strurltest);
                 requestObjGet.Method = "GET";
-                HttpWebResponse responseObjGet = null;
-                responseObjGet = (HttpWebResponse)requestObjGet.GetResponse();
+                WebResponse responseObjGet = null;
+                responseObjGet = await requestObjGet.GetResponseAsync();
                 string strresulttest = null;
                 using (Stream stream = responseObjGet.GetResponseStream())
                 {
@@ -76,7 +76,7 @@ namespace FlightControlWeb.Models
                     Console.WriteLine(item.Id);
                 }*/
             }
-           
+
             return ex;
         }
 
@@ -88,6 +88,14 @@ namespace FlightControlWeb.Models
             }
             return flights;
         }
-        
+        /*   public async Task<string> try1()
+               {
+               WebResponse responseObjGet = null;
+               responseObjGet = await requestObjGet.GetResponseAsync();
+
+            HttpWebResponse responseObjGet = null;
+                   responseObjGet = await (HttpWebResponse)requestObjGet.GetResponse();
+           }*/
+
     }
 }

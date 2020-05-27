@@ -19,14 +19,14 @@ namespace FlightControlWeb.Controllers
         // GET: api/FlightPlan/5
         //xqxa4706KL
         [HttpGet("{id}", Name = "GetFlightPlan")]
-        public ActionResult<FlightPlan> GetFlightPlan(string id)
+        public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
             //find the flighplan in db
             FlightPlanDB flightPlanDB = sql.flightsplanById(id);
             FlightPlan flightPlan;
             if (flightPlanDB == null)
             {
-               flightPlan =externalFlights.GetExternalFlightById(id);   
+               flightPlan = await externalFlights.GetExternalFlightById(id);   
             }
             else
             {

@@ -148,7 +148,7 @@ namespace FlightControlWeb
             FlightPlanDB flightPlanDB;
             //FlightPlan flightPlan;
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
-            string query = $"SELECT * FROM Flight WHERE ('{time}'> start_time) AND ('{time}' < end_time)";
+            string query = $"SELECT * FROM Flight WHERE ('{time}'>= start_time) AND ('{time}' <= end_time)";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
