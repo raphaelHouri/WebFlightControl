@@ -1,4 +1,5 @@
-﻿using FlightControlWeb.Models;
+﻿
+using FlightControlWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -247,7 +248,7 @@ namespace FlightControlWeb
         public void addServer(Server server)
         {
 
-        //    Database databaseObject = new Database();
+            Database databaseObject = new Database();
             ////// INSERT INTO DATABASE
             string query = "INSERT INTO Servers ('id', 'url') VALUES (@id, @url);";
 
