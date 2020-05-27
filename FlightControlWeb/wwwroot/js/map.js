@@ -61,26 +61,40 @@ function initMap() {
         marker.addListener('click', function () {
             flagExist = 1;
             infoWindow.open(map, marker);
-            showTable(infoWindow.object);
+            showTable(infoWindow.object.flight_id);
         });
 
     }
-    function showTable(user) {
+    function showTable(id) {
+       // GET: api/FlightPlan/
+        fetch('api/FlightPlan/' + id)
+            .then(result => {
+
+                return result.json();
+            })
+            .then(data => {
+                addFlightDetail(data,id);
+            })
+            .catch(error => {
+                alert(error);
+
+            });
 
 
 
-
-        let dateLanding = getEndTime(user.segments, user.initial_location.date_time);
+    }
+    function addFlightDetail(user,id) {
+        let dateLanding = getEndTime(user.segments, user.initial_Location.date_time);
         let segLength = user.segments.length;
         let output = '<div>Flights:</div>';
         output +=
             `<tr id="flightDetail1" style="font-size: small;">
-                <th>${user.id}</th>
-                <th>${user.initial_location.longitude} , ${user.initial_location.latitude}</th>
+                <th>${id}</th>
+                <th>${user.initial_Location.longitude} , ${user.initial_Location.latitude}</th>
                 <th>${user.segments[segLength - 1].longitude} , ${user.segments[segLength - 1].latitude}</th>
-                <th>${user.initial_location.date_time}</th>
+                <th>${user.initial_Location.date_time}</th>
                 <th>${dateLanding}</th>
-                <th>${user.company_name}</th>
+                <th>${user.company_Name}</th>
                 <th>${user.passengers}</th>
 
               </tr>`

@@ -317,7 +317,28 @@ namespace FlightControlWeb
             return ServerList;
 
         }
+        public Server serverById(string id)
+        {
+            Server server = null;
+            string query = $"SELECT * FROM Servers WHERE id = '{id}';";
+            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
+            databaseObject.OpenConnection();
+            SQLiteDataReader result = myCommand.ExecuteReader();
+            
+            if (result.HasRows)
+            {
+                while (result.Read())
+                {
+                    string url = $"{result["url"]}";
 
+                    server = new Server(id, url);
+
+                }
+            }
+            databaseObject.CloseConnection();
+            return server;
+
+        }
 
 
 
