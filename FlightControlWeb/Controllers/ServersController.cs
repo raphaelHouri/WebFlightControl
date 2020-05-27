@@ -15,10 +15,14 @@ namespace FlightControlWeb.Controllers
         private SQLCommands sql = new SQLCommands();
         // GET: api/Servers
         [HttpGet]
-        public IEnumerable<Server> Get()
+        public ActionResult<List<Server>> Get()
         {
             List<Server> syncServers = sql.ServerList();
-            return syncServers;
+            if (syncServers.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(syncServers);
         }
 
       /*  // GET: api/Servers/5
@@ -31,19 +35,36 @@ namespace FlightControlWeb.Controllers
 
         // POST: api/Servers
         [HttpPost]
-        public Server Post([FromBody] Server server)
+        public ActionResult Post([FromBody] Server server)
         {
-            sql.addServer(server);
-            return server;
+            try
+            {
+                sql.addServer(server);
+                return Created("new server added to the data base",server);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+           
         }
 
 
         // DELETE: api/Servers/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public ActionResult Delete(string id)
         {
-            //remove it from db
-            sql.deleteServer(id);
+            try
+            {
+                //remove it from db
+                sql.deleteServer(id);
+                return Ok();
+            }
+            catch
+            {
+                return NotFound(id);
+            }
+           
         }
     }
 }

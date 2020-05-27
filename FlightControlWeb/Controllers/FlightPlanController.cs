@@ -14,33 +14,56 @@ namespace FlightControlWeb.Controllers
     {
         //SQL part
         private SQLCommands sql = new SQLCommands();
+        private ExternalFlights externalFlights = new ExternalFlights();
 
         // GET: api/FlightPlan/5
         //xqxa4706KL
         [HttpGet("{id}", Name = "GetFlightPlan")]
-        public FlightPlan GetFlightPlan(string id)
+        public ActionResult<FlightPlan> GetFlightPlan(string id)
         {
             //find the flighplan in db
             FlightPlanDB flightPlanDB = sql.flightsplanById(id);
-            FlightPlan flightPlan= flightPlanDB.GetFlightPlan();
-            return flightPlan;
+            FlightPlan flightPlan;
+            if (flightPlanDB == null)
+            {
+               flightPlan =externalFlights.GetExternalFlightById(id);   
+            }
+            else
+            {
+                flightPlan = flightPlanDB.GetFlightPlan();
+            }
+
+            if (flightPlan == null)
+            {
+                return NotFound();
+            }
+            return Ok(flightPlan);
+            
         }
 
         // POST: api/FlightPlan
         [HttpPost]
-        public FlightPlan Post([FromBody] FlightPlan p)
+        public ActionResult Post([FromBody] FlightPlan p)
         {
             // p.Id = 5;
             // return CreatedAtAction(actionName: "GetItem", new { id = p.Id }, p);
+            try
+            {
+                sql.addPlan(p);
+                return Created("new flight plan added to the data base",p);
+            }
+            catch
+            {
+                //Internal Server Error
+                return StatusCode(500);
+            }
 
-            sql.addPlan(p);
-            return p;
         }
 
-        // DELETE: api/ApiWithActions/5
+      /*  // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
+        }*/
     }
 }
