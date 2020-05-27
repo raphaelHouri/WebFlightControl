@@ -153,11 +153,6 @@ function getUsers() {
                         ` <div class="item clearfix" id="${user.id}">
                             <div class="item__description">${user.id}</div>
                             <div class="item__description" style="text-indent :1em">${user.company_name}</div>
-                            <div class="right clearfix">
-                                <div class="item__delete" style="text-indent :1em">
-                                    <button class="item__delete--btn" onClick="reply_click(${user.id})"><i class="ion-ios-close-outline"></i></button>
-                                </div>
-                            </div>
                         </div>
                        </div>`;
 
