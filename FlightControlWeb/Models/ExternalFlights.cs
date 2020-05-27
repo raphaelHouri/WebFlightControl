@@ -12,6 +12,7 @@ namespace FlightControlWeb.Models
 {
     public class ExternalFlights
     {
+        public static Dictionary<string, string> DicFlightServer;
         public async Task<FlightPlan> GetExternalFlightById(string id)
         {
             FlightPlan flightPlan = null;
@@ -19,6 +20,16 @@ namespace FlightControlWeb.Models
             //Get
             //api/FlightPlan/" + id;
             SQLCommands commands = new SQLCommands();
+            //find the server of the flight id
+          /*  string serverId = DicFlightServer[id];
+            if (serverId == null)
+            {
+                return null;
+            }
+            else
+            {
+                Server server =commands.
+            }*/
             List<Server> ourServers = commands.ServerList();
             foreach (Server server in ourServers)
             {
@@ -46,6 +57,7 @@ namespace FlightControlWeb.Models
         }
         public async Task<List<Flight>> GetExternalFlights(string time)
         {
+            DicFlightServer = new Dictionary<string, string>();
             List<Flight> ex = null;
             // List<FlightPlan> ex = new List<FlightPlan>();
             //Get
@@ -71,10 +83,11 @@ namespace FlightControlWeb.Models
                     sr.Close();
                 }
                 ex = JsonConvert.DeserializeObject<List<Flight>>(strresulttest);
-                /*foreach (var item in ex)
+                //add mapping from each id flight to the server id
+                foreach (Flight item in ex)
                 {
-                    Console.WriteLine(item.Id);
-                }*/
+                    DicFlightServer.Add(item.Flight_id, server.ServerId);
+                }
             }
 
             return ex;
