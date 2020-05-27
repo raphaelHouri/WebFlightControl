@@ -48,6 +48,8 @@ namespace FlightControlWeb.Models
             int index = 0;
             for(int i = 0; i < segments.Count; i++)
             {
+              
+                time = time + segments[i].Timespan_Seconds;
                 if (time > diff)
                 {
                     index = i;
@@ -58,10 +60,7 @@ namespace FlightControlWeb.Models
                     i = i + 1;
                     break;
                 }
-                else
-                {
-                    time = time + segments[i].Timespan_Seconds;
-                }
+
             }
             return index;
            
