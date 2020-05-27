@@ -29,6 +29,8 @@ namespace FlightControlWeb.Models
             else
             {
                 Server server =commands.
+                //like ther= rest of the code
+
             }*/
             List<Server> ourServers = commands.ServerList();
             foreach (Server server in ourServers)
