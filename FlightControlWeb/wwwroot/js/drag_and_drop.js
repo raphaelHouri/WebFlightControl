@@ -49,8 +49,8 @@ let dropArea = document.getElementById("drop-visible-area")
     }
 
         function handleDrop(e) {
-            var dt = e.dataTransfer
-            var file = dt.files[0];
+            let dt = e.dataTransfer
+            let file = dt.files[0];
             handleFiles(file)
         }
         function handleFiles(file) {
@@ -99,7 +99,8 @@ let dropArea = document.getElementById("drop-visible-area")
           todoEl.id = todo.id;
           todoEl.innerHTML = `${todo.name}`;
           todo.append(todoEl);*/
-        console.log(res);
+            console.log(res);
+            getAllFlight();
         }
         function hide() {
         let x = document.getElementById("drop-area");

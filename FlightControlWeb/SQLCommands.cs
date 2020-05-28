@@ -307,7 +307,7 @@ namespace FlightControlWeb
                     string id = $"{result["id"]}";
                     string url = $"{result["url"]}";
 
-                    server = new Server(id, url);
+                    server = serverById($"{result["id"]}");
                     ServerList.Add(server);
                 }
             }

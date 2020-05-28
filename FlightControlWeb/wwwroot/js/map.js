@@ -1,19 +1,25 @@
 ﻿
-
+let firstTime = true;
 let flagExist = 0;
 let markers = [];
 let map;
 let options;
 let flightPlanCoordinates = [];
 let flightPath;
+
 function initMap() {
-    let myLatLng = new google.maps.LatLng(0, -180);
-    // Map options
-    let options = {
-        zoom: 2,
-        center: { lat: 42.3601, lng: -71.0589 },
-        mapTypeId: google.maps.MapTypeId.TERRAIN
-    };
+
+    if (firstTime) {
+        // Map options
+        options = {
+            zoom: 2,
+            center: { lat: 42.3601, lng: -71.0589 },
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+        firstTime = false;
+
+    }
+
 
     // New map
     map = new google.maps.Map(document.getElementById('map'), options);
@@ -25,25 +31,26 @@ function initMap() {
             let elmnt = document.getElementById("flightDetail1");
             elmnt.remove();
             flagExist = 0;
-            initMap();
+            flightPath.setMap(null);
         }
     });
+    function refeshMap() {
 
-
-    // Loop through markers
-    for (let i = 0; i < markers.length; i++) {
-        // Add marker
-        addMarker(markers[i]);
+        // Loop through markers
+        for (let i = 0; i < markers.length; i++) {
+            // Add marker
+            addMarker(markers[i]);
+        }
     }
 
-
-
+    refeshMap();
 
     // Add Marker Function
     function addMarker(props) {
         let marker = new google.maps.Marker({
             position: new coordinate(props.longitude, props.latitude),
-            map: map
+            map: map,
+
         });
 
 
@@ -60,9 +67,14 @@ function initMap() {
 
         marker.addListener('click', function () {
             flagExist = 1;
-            infoWindow.open(map, marker);
             showTable(infoWindow.object.flight_id);
+            flightPath.setMap(null);
+
+
         });
+
+        marker.addListener('mouseover', () => infoWindow.open(map, marker))
+        marker.addListener('mouseout', () => infoWindow.close())
 
     }
     function showTable(id) {
@@ -100,8 +112,10 @@ function initMap() {
               </tr>`
             ;
 
-        document.getElementById('output').innerHTML = output;
 
+        document.getElementById('output').innerHTML = output;
+        flightPlanCoordinates = [];
+        flightPath = null;
         flightPlanCoordinates = createListPathCoord(user);
 
         flightPath = new google.maps.Polyline({
@@ -116,77 +130,9 @@ function initMap() {
 
 }
 
-//function getAllFlight() {
-
-//    fetch("https://localhost:44300/api/Flights?relative_to=2020-12-27 01:56:22Z")
-//        .then(result => {
-//            // console.log(result);
-//            return result.json();
-//        })
-//        .then((data) => {
-//            //            let output = '<h2>User</h2>';
-//            let outputMyFlight =
-//                `<div class="item clearfix">
-//                            <div class="item__description" ><h6>ID</h6></div>
-                            
-//                            <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
-//                            <div class="right clearfix">
-//                            </div>
-//                    </div>
-//                   </div>`;
-//            let outputExFlight =
-//                `<div class="item clearfix">
-//                            <div class="item__description" ><h6>ID</h6></div>
-                            
-//                            <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
-//                            <div class="right clearfix">
-//                            </div>
-//                    </div>
-//                   </div>`;
-
-
-//            markers = data;
-//            initMap();
-//            data.forEach(function (user) {
-
-//                console.log(user);
-
-//                if (!user.is_external) {
-//                    outputMyFlight +=
-//                        `<div class="item clearfix">
-//                            <div class="item__description" >${user.flight_id}</div>
-                            
-//                            <div class="item__description" style="text-indent :1em">${user.company_name}</div>
-//                            <div class="right clearfix">
-//                                <div class="item__delete" style="text-indent :1em">
-//                                    <button class="item__delete--btn" onClick="reply_click(${user.flight_id})"><i class="ion-ios-close-outline"></i></button>
-//                                </div>
-//                            </div>
-//                    </div>
-//                   </div>`;
-
-
-//                } else {
-//                    outputExFlight +=
-//                        ` <div class="item clearfix" id="${user.flight_id}">
-//                            <div class="item__description">${user.flight_id}</div>
-//                            <div class="item__description" style="text-indent :1em">${user.company_name}</div>
-//                        </div>
-//                       </div>`;
-
-//                }
-
-
-//            });
-
-
-//            document.getElementById('outputMyFlight').innerHTML = outputMyFlight;
-//            document.getElementById('outputExFlight').innerHTML = outputExFlight;
-//        })
-//        .catch(error => console.log(error));
-//}
 
 function getAllFlight() {
+    markers = [];
     fetch("https://localhost:44300/api/Flights?relative_to=2020-12-27 01:56:22Z")
         .then(result => {
             
@@ -201,8 +147,6 @@ function getAllFlight() {
 
 
 function addDetailsFlights(data) {
-
-            //            let output = '<h2>User</h2>';
             let outputMyFlight =
                 `<div class="item clearfix">
                             <div class="item__description" ><h6>ID</h6></div>
@@ -256,17 +200,15 @@ function addDetailsFlights(data) {
             document.getElementById('outputMyFlight').innerHTML = outputMyFlight;
             document.getElementById('outputExFlight').innerHTML = outputExFlight;
 }
+getAllFlight()
 
-getAllFlight();
+setInterval(function () {
+    getAllFlight();
+}, 3000);
 
 
-////document.getElementById('getUsers').addEventListener('click', getUsers);
-//function getUsers() {
 
-//    fetch('json.json')
-//        .then((res) => res.json())
 
-//}
 function reply_click(id) {
 
 
@@ -277,7 +219,8 @@ function reply_click(id) {
             alert(id + ' delete from DB');
             let myobj = document.getElementById(id);
             myobj.remove();
-            initMap();
+           getAllFlight();
+        
         })
         .catch(error => {
             alert(error);
