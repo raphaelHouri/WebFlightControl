@@ -82,7 +82,8 @@ function SetMarker() {
 
         marker.addListener('click', function () {
             flagExist = 1;
-            showTable(infoWindow.object.flight_id);
+            showTable(infoWindow.object.flight_id)
+                .catch(alert);
             if (ExsitLine) {
                 flightPath.setMap(null);
                 ExsitLine = false;
@@ -106,24 +107,38 @@ function SetMarker() {
 
 
 
+async function showTable(id) { // (1)
+        // GET: api/FlightPlan/
+    let response = await fetch('api/FlightPlan/' + id); // (2)
 
+    if (response.status == 200) {
+        let data = await response.json(); // (3)
+        addFlightDetail(data, id)
+    } else {
+        throw new Error(response.status);
 
-async function showTable(id) {
-    // GET: api/FlightPlan/
-    await fetch('api/FlightPlan/' + id)
-        .then(result => {
+    }
 
-            let object =  result.json();
-            return object;
-        })
-        .then(data => {
-            addFlightDetail(data, id);
-        })
-        .catch(error => {
-            alert(error);
-
-        });
 }
+
+
+
+//async function showTable(id) {
+//    // GET: api/FlightPlan/
+//    await fetch('api/FlightPlan/' + id)
+//        .then(result => {
+
+//            let object =  result.json();
+//            return object;
+//        })
+//        .then(data => {
+//            addFlightDetail(data, id);
+//        })
+//        .catch(error => {
+//            alert(error);
+
+//        });
+//}
 
 function addFlightDetail(user, id) {
     let dateLanding = getEndTime(user.segments, user.initial_Location.date_time);
@@ -156,28 +171,49 @@ function addFlightDetail(user, id) {
 }
 
 
-function getAllFlight() {
+
+
+
+async function getAllFlight() { // (1)
     flagData = false
     let time = getUTCTime()
-    let flightsUrl = "api/Flights";
-    $.ajax({
-        type: "GET",
-        url: flightsUrl,
-        dataType: 'json',
-        data: {
-            relative_to: time
-        }, success: function (data) {
-            flagData = true
-            addDetailsFlights(data);
-            SetMarker();
-        },
-        error: function (error) {
-            console.log(error)
-            SetMarkerWithoutData()
-        }
-    });
+
+    let response = await fetch("https://localhost:44300/api/Flights?relative_to=" + time); // (2)
+
+    if (response.status == 200) {
+        let data = await response.json(); // (3)
+        addDetailsFlights(data);
+        SetMarker();
+    } else {
+
+        SetMarkerWithoutData()
+
+    }
 
 }
+
+//function getAllFlight() {
+//    flagData = false
+//    let time = getUTCTime()
+//    let flightsUrl = "api/Flights";
+//    $.ajax({
+//        type: "GET",
+//        url: flightsUrl,
+//        dataType: 'json',
+//        data: {
+//            relative_to: time
+//        }, success: function (data) {
+//            flagData = true
+//            addDetailsFlights(data);
+//            SetMarker();
+//        },
+//        error: function (error) {
+//            console.log(error)
+//            SetMarkerWithoutData()
+//        }
+//    });
+
+//}
 
 
 //function getAllFlight() {
@@ -264,7 +300,8 @@ function addDetailsFlights(data) {
 
 
 setInterval(function () {
-    getAllFlight();
+    getAllFlight()
+
     //SetMarker();
 
 }, 9000);
