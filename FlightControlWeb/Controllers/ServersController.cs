@@ -65,14 +65,14 @@ namespace FlightControlWeb.Controllers
             {
                 //remove it from db
                 sql.deleteServer(id);
-              /*  //remove all the flights with this id server from the dic
+                //remove all the flights with this id server from the dic
                 foreach (var item in ExternalFlights.DicFlightServer)
                 {
                     if (item.Value == id)
                     {
                         ExternalFlights.DicFlightServer.Remove(item.Key);
                     }
-                }*/
+                }
                 return Ok();
             }
             catch
