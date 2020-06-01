@@ -117,7 +117,7 @@ async function uploadFile(file) {
     let response = await fetch("api/FlightPlan", postOptions)
 
     if (response.status == 201) {
-        let data = await response.json(); // (3)
+        let data = await response.json(); 
         appendItem(data)
         alert("New flight plan added to the data base")
     } else {
