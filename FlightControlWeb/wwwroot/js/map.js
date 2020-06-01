@@ -308,30 +308,55 @@ setInterval(function () {
 
 
 
-async function reply_click(id) {
 
+async function reply_click(id) { 
 
-    await fetch('https://localhost:44300/api/Flights/' + id, {
+    let response = await  fetch('https://localhost:44300/api/Flights/' + id, {
         method: 'DELETE',
         body: id
-    }).then(result => {
-        alert(id + ' delete from DB');
-        //let myobj = document.getElementById(id);
-        //myobj.remove();
-        getAllFlight();
+    }); 
 
+    if (response.status == 200) {
+        alert(id + ' delete from DB');
+        getAllFlight();
         if (ExsitLine) {
             flightPath.setMap(null);
             ExsitLine = false;
         }
-    })
-        .catch(error => {
-            alert(error);
-
-        });
-
+    } else {
+        try {
+            throw new Error(response.status);
+        } catch(error){
+            alert(error)
+        }
+    }
 
 }
+
+//async function reply_click(id) {
+
+
+//    await fetch('https://localhost:44300/api/Flights/' + id, {
+//        method: 'DELETE',
+//        body: id
+//    }).then(result => {
+//        alert(id + ' delete from DB');
+//        //let myobj = document.getElementById(id);
+//        //myobj.remove();
+//        getAllFlight();
+
+//        if (ExsitLine) {
+//            flightPath.setMap(null);
+//            ExsitLine = false;
+//        }
+//    })
+//        .catch(error => {
+//            alert(error);
+
+//        });
+
+
+//}
 function getEndTime(seg, startTime) {
     let sumSeconds = 0;
     for (let i = 0; i < seg.length; i++) {
