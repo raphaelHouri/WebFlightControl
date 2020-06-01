@@ -15,7 +15,7 @@ namespace FlightControlWeb.Models
     //step 3. divide the dattime from the total
     //step 4. check the total distance in the flight
     //step 5.mult the realtive time to the total distance
-    public class FlightCalculator : IFlightCalculator
+    public class FlightCalculator 
     {
 
         // subset from  current datetime to initial(need to convert the string).

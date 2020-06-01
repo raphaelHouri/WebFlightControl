@@ -7,7 +7,7 @@ using System.IO;
 
 namespace FlightControlWeb
 {
-    public class Database 
+    public class Database
     {
         /*private static Database instance = null;
         private static readonly object padlock = new object();*/

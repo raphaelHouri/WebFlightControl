@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using FlightControlWeb.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +27,11 @@ namespace FlightControlWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddMvc().AddNewtonsoftJson();
+            services.AddControllers();
+            //services.AddSingleton(typeof(IDatabase), typeof(Database));
+            services.AddSingleton(typeof(IExternalFlights), typeof(ExternalFlights));
+            services.AddSingleton(typeof(ISQLCommands), typeof(SQLCommands));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,7 +12,10 @@ namespace FlightControlWeb
 {
     public class SQLCommands : ISQLCommands
     {
-        private Database databaseObject = new Database();
+       private Database databaseObject = new Database();
+     //  private readonly IDatabase databaseObject;
+       
+
         //add plan to DB from the object we got from json
         public void addPlan(FlightPlan flightPlan)
         {
