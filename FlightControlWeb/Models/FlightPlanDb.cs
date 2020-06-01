@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class FlightPlanDB
+    public class FlightPlanDB : IFlightPlanDB
     {
         private FlightPlan flightPlan;
         private string id;
