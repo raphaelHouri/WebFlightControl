@@ -178,7 +178,7 @@ async function getAllFlight() {
     flagData = false
     let time = getUTCTime()
 
-    let response = await fetch("https://localhost:44300/api/Flights?relative_to=" + time); 
+    let response = await fetch("https://localhost:44300/api/Flights?relative_to=" + time + "&sync_all"); 
 
     if (response.status == 200) {
         let data = await response.json(); 
