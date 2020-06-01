@@ -84,14 +84,50 @@ let dropArea = document.getElementById("drop-visible-area")
 
         }
 
-        async function uploadFile(file) {
-        let postOptions = preparePost(file)
-            console.log(postOptions);
-            await fetch("api/FlightPlan", postOptions)
-                .then(response => response.json())
-                .then(appendItem)
-                .catch(error => console.log(error))
+//        async function uploadFile(file) {
+//        let postOptions = preparePost(file)
+//            console.log(postOptions);
+//            await fetch("api/FlightPlan", postOptions)
+//                .then(response => response.json())
+//                .then(appendItem)
+//                .catch(error => console.log(error))
+//}
+
+//async function uploadFile(file) {
+//    let postOptions = preparePost(file)
+//    console.log(postOptions);
+//    await fetch("api/FlightPlan", postOptions)
+
+//    if (response.status != 500) {
+//        let data = await response.json(); 
+//        addFlightDetail(data, id)
+//    } else {
+//        try {
+//            throw new Error(response.status);
+//        } catch (error) {
+//            alert(error)
+//        }
+//    }
+
+//}
+
+async function uploadFile(file) {
+    let postOptions = preparePost(file)
+    console.log(postOptions);
+    let response = await fetch("api/FlightPlan", postOptions)
+
+    if (response.status == 201) {
+        let data = await response.json(); // (3)
+        appendItem(data)
+        alert("New flight plan added to the data base")
+    } else {
+        try {
+            throw new Error(response.status);
+        } catch (error) {
+            alert(error)
         }
+    }
+}
 
         function appendItem(res) {
         /*  let todos = document.getElementById("t_list");

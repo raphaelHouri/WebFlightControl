@@ -109,11 +109,11 @@ function SetMarker() {
 
 async function showTable(id) { // (1)
         // GET: api/FlightPlan/
-    let response = await fetch('api/FlightPlan/' + id); // (2)
+    let response = await fetch('api/FlightPlan/' + id); 
 
     if (response.status == 200) {
-        let data = await response.json(); // (3)
-        addFlightDetail(data, id)
+        let data = await response.json(); 
+        await addFlightDetail(data, id)
     } else {
         throw new Error(response.status);
 
@@ -141,15 +141,15 @@ async function showTable(id) { // (1)
 //}
 
 function addFlightDetail(user, id) {
-    let dateLanding = getEndTime(user.segments, user.initial_Location.date_time);
+    let dateLanding = getEndTime(user.segments, user.initial_location.date_time );
     let segLength = user.segments.length;
     let output = '<div>Flights:</div>';
     output +=
         `<tr id="flightDetail1" style="font-size: small;">
                     <th>${id}</th>
-                    <th>${user.initial_Location.latitude} , ${user.initial_Location.longitude}</th>
+                    <th>${user.initial_location.latitude} , ${user.initial_location.longitude}</th>
                     <th>${user.segments[segLength - 1].longitude} , ${user.segments[segLength - 1].latitude}</th>
-                    <th>${user.initial_Location.date_time}</th>
+                    <th>${user.initial_location.date_time}</th>
                     <th>${dateLanding}</th>
                     <th>${user.company_Name}</th>
                     <th>${user.passengers}</th>
@@ -174,14 +174,14 @@ function addFlightDetail(user, id) {
 
 
 
-async function getAllFlight() { // (1)
+async function getAllFlight() { 
     flagData = false
     let time = getUTCTime()
 
-    let response = await fetch("https://localhost:44300/api/Flights?relative_to=" + time); // (2)
+    let response = await fetch("https://localhost:44300/api/Flights?relative_to=" + time); 
 
     if (response.status == 200) {
-        let data = await response.json(); // (3)
+        let data = await response.json(); 
         addDetailsFlights(data);
         SetMarker();
     } else {
@@ -308,30 +308,55 @@ setInterval(function () {
 
 
 
-async function reply_click(id) {
 
+async function reply_click(id) { 
 
-    await fetch('https://localhost:44300/api/Flights/' + id, {
+    let response = await  fetch('https://localhost:44300/api/Flights/' + id, {
         method: 'DELETE',
         body: id
-    }).then(result => {
-        alert(id + ' delete from DB');
-        //let myobj = document.getElementById(id);
-        //myobj.remove();
-        getAllFlight();
+    }); 
 
+    if (response.status == 200) {
+        alert(id + ' delete from DB');
+        getAllFlight();
         if (ExsitLine) {
             flightPath.setMap(null);
             ExsitLine = false;
         }
-    })
-        .catch(error => {
-            alert(error);
-
-        });
-
+    } else {
+        try {
+            throw new Error(response.status);
+        } catch(error){
+            alert(error)
+        }
+    }
 
 }
+
+//async function reply_click(id) {
+
+
+//    await fetch('https://localhost:44300/api/Flights/' + id, {
+//        method: 'DELETE',
+//        body: id
+//    }).then(result => {
+//        alert(id + ' delete from DB');
+//        //let myobj = document.getElementById(id);
+//        //myobj.remove();
+//        getAllFlight();
+
+//        if (ExsitLine) {
+//            flightPath.setMap(null);
+//            ExsitLine = false;
+//        }
+//    })
+//        .catch(error => {
+//            alert(error);
+
+//        });
+
+
+//}
 function getEndTime(seg, startTime) {
     let sumSeconds = 0;
     for (let i = 0; i < seg.length; i++) {
@@ -359,7 +384,7 @@ function getUTCTime() {
 
 function createListPathCoord(user) {
     let listCoord = [];
-    listCoord.push(new google.maps.LatLng(user.initial_Location.latitude, user.initial_Location.longitude));
+    listCoord.push(new google.maps.LatLng(user.initial_location.latitude, user.initial_location.longitude));
 
     user.segments.forEach(function (item) {
 
