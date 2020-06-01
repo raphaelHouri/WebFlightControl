@@ -286,7 +286,8 @@ namespace FlightControlWeb
             }
             else
             {
-                Console.WriteLine(result);
+                databaseObject.CloseConnection();
+                throw new Exception();
             }
             databaseObject.CloseConnection();
         }
