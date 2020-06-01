@@ -1,5 +1,5 @@
-﻿
-let firstTime = true;
+﻿let firstTime = true;
+let flagData ;
 let flagExist = 0;
 let markers = [];
 let markerList = [];
@@ -21,13 +21,18 @@ function initMap() {
 
     // New map
     map = new google.maps.Map(document.getElementById('map'), options);
-    getAllFlight();
-    SetMarker();
+    //getAllFlight();
+    //SetMarker();
 }
-function SetMarker() {
+function SetMarkerWithoutData() {
     if (markers.length == 0) {
         return;
     }
+    removeMarkers();
+    removeDetailsMarkers();
+    markers = [];
+}
+function removeMarkers() {
     for (let i = 0; i < markerList.length; i++) {
         //Remove previous Marker.
         if (markerList[i] != null) {
@@ -35,13 +40,27 @@ function SetMarker() {
         }
     }
     markerList = []
+}
+function removeDetailsMarkers() {
+    markers.forEach(function (item) {
+        let myobj = document.getElementById(item.flight_id);
+        myobj.remove();
+    });
+}
+
+
+function SetMarker() {
+
+    removeMarkers();
+
+
     for (let i = 0; i < markers.length; i++) {
 
         //Set Marker on Map.
         let data = markers[i];
         //let myLatlng = new google.maps.LatLng(data.latitude, data.longitude);
         let marker = new google.maps.Marker({
-            position: new coordinate(markers[i].longitude, markers[i].latitude),
+            position: new coordinate(markers[i].latitude, markers[i].longitude),
             //position: myLatlng,
             map: map,
             title: data.title
@@ -61,31 +80,27 @@ function SetMarker() {
         marker.addListener('mouseout', () => infoWindow.close())
 
 
-    marker.addListener('click', function () {
-        flagExist = 1;
-        showTable(infoWindow.object.flight_id);
-        if (ExsitLine) {
-            flightPath.setMap(null);
-            ExsitLine = false;
-        }
-    });
-    google.maps.event.addListener(map, 'click', function (e) {
-        if (flagExist == 1) {
-            let elmnt = document.getElementById("flightDetail1");
-            elmnt.remove();
-            flagExist = 0;
+        marker.addListener('click', function () {
+            flagExist = 1;
+            showTable(infoWindow.object.flight_id);
             if (ExsitLine) {
                 flightPath.setMap(null);
                 ExsitLine = false;
             }
-            
-        }
-    });
+        });
+        google.maps.event.addListener(map, 'click', function (e) {
+            if (flagExist == 1) {
+                let elmnt = document.getElementById("flightDetail1");
+                elmnt.remove();
+                flagExist = 0;
+                if (ExsitLine) {
+                    flightPath.setMap(null);
+                    ExsitLine = false;
+                }
+
+            }
+        });
     }
-
-
-
-
 
 }
 
@@ -107,10 +122,8 @@ function showTable(id) {
             alert(error);
 
         });
-
-
-
 }
+
 function addFlightDetail(user, id) {
     let dateLanding = getEndTime(user.segments, user.initial_Location.date_time);
     let segLength = user.segments.length;
@@ -118,7 +131,7 @@ function addFlightDetail(user, id) {
     output +=
         `<tr id="flightDetail1" style="font-size: small;">
                     <th>${id}</th>
-                    <th>${user.initial_Location.longitude} , ${user.initial_Location.latitude}</th>
+                    <th>${user.initial_Location.latitude} , ${user.initial_Location.longitude}</th>
                     <th>${user.segments[segLength - 1].longitude} , ${user.segments[segLength - 1].latitude}</th>
                     <th>${user.initial_Location.date_time}</th>
                     <th>${dateLanding}</th>
@@ -128,8 +141,6 @@ function addFlightDetail(user, id) {
                   </tr>`
         ;
     document.getElementById('output').innerHTML = output;
-    //flightPlanCoordinates = [];
-    //flightPath = null;
     flightPlanCoordinates = createListPathCoord(user);
 
     flightPath = new google.maps.Polyline({
@@ -145,18 +156,50 @@ function addFlightDetail(user, id) {
 
 
 function getAllFlight() {
-
-    fetch("https://localhost:44300/api/Flights?relative_to=2020-12-27 01:56:22Z")
-        .then(result => {
-
-            return result.json();
-        })
-        .then(data => {
-            console.log(data);
+    flagData = false
+    let time = getUTCTime()
+    let flightsUrl = "api/Flights";
+    $.ajax({
+        type: "GET",
+        url: flightsUrl,
+        dataType: 'json',
+        data: {
+            relative_to: time
+        }, success: function (data) {
+            flagData = true
             addDetailsFlights(data);
-        })
-        .catch(error => console.log(error));
+            SetMarker();
+        },
+        error: function (error) {
+            console.log(error)
+            SetMarkerWithoutData()
+        }
+    });
+
 }
+
+
+//function getAllFlight() {
+//    let time = getUTCTime()
+//    flagData = false
+
+//    fetch("https://localhost:44300/api/Flights?relative_to=" + time)
+//        .then(result => {
+
+//            return result.json();
+//        })
+//        .then(data => {
+//                flagData = true
+//                console.log(data);
+//                addDetailsFlights(data);
+         
+
+//        })
+//        .catch(error => {
+//            console.log(error)
+//        });
+
+//}
 
 
 function addDetailsFlights(data) {
@@ -178,7 +221,14 @@ function addDetailsFlights(data) {
                                 </div>
                         </div>
                        </div>`;
-    markers = data;
+
+    removeDetailsMarkers();
+
+        markers = data;
+
+
+
+
     data.forEach(function (user) {
 
         console.log(user);
@@ -214,10 +264,9 @@ function addDetailsFlights(data) {
 
 setInterval(function () {
     getAllFlight();
-    SetMarker();
+    //SetMarker();
 
-}, 3000);
-
+}, 9000);
 
 
 
@@ -229,11 +278,14 @@ function reply_click(id) {
         body: id
     }).then(result => {
         alert(id + ' delete from DB');
-        let myobj = document.getElementById(id);
-        myobj.remove();
+        //let myobj = document.getElementById(id);
+        //myobj.remove();
         getAllFlight();
-        flightPath.setMap(null);
 
+        if (ExsitLine) {
+            flightPath.setMap(null);
+            ExsitLine = false;
+        }
     })
         .catch(error => {
             alert(error);
@@ -259,17 +311,21 @@ function getEndTime(seg, startTime) {
     let n = now_utc.toISOString();
     return n;
 }
-//fix that
+function getUTCTime() {
+    var date1 = new Date().toISOString().slice(0, -5) + 'Z';
+    date1 = date1.replace(/T/g, " ");
+
+
+    return date1;
+}
+
 function createListPathCoord(user) {
     let listCoord = [];
-    //        // before
-    //        for (let i = 0; i < user.segments.length; i++) {
-    //          listCoord.push(new google.maps.LatLng(37.772323+i, -122.214897));
-    //        }
-    let i = 0;
+    listCoord.push(new google.maps.LatLng(user.initial_Location.latitude, user.initial_Location.longitude));
+
     user.segments.forEach(function (item) {
 
-        listCoord.push(new google.maps.LatLng(item.longitude, item.latitude));
+        listCoord.push(new google.maps.LatLng(item.latitude, item.longitude));
     })
     return listCoord;
 }

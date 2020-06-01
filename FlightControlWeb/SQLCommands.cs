@@ -195,7 +195,7 @@ namespace FlightControlWeb
                     string company = $"{result["company"]}";
                     int passenger = Convert.ToInt32($"{result["passengers"]}");
                     //create initial location
-                    initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_latitude"]}"), Convert.ToDouble($"{result["start_longitude"]}"), fromStringToDate($"{result["start_time"]}"));
+                    initialLocation = new InitialLocation( Convert.ToDouble($"{result["start_longitude"]}"), Convert.ToDouble($"{result["start_latitude"]}"), fromStringToDate($"{result["start_time"]}"));
                     //create flightplan
                     flightPlan = new FlightPlan(passenger, company, initialLocation, segmentList(id));
 

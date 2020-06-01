@@ -26,7 +26,15 @@ namespace FlightControlWeb.Controllers
             FlightPlan flightPlan;
             if (flightPlanDB == null)
             {
-               flightPlan = await externalFlights.GetExternalFlightById(id);   
+                try
+                {
+                    flightPlan = await externalFlights.GetExternalFlightById(id);
+
+                }
+                catch
+                {
+                    return NotFound();
+                }
             }
             else
             {
