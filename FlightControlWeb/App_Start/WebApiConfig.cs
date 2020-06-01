@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Routing.Template;
+﻿/*using Microsoft.AspNetCore.Routing.Template;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
+//using System.Web.Http;
 //using System.Web.Http;
 
 namespace FlightControlWeb.App_Start
@@ -22,3 +22,4 @@ namespace FlightControlWeb.App_Start
         }
     }
 }
+*/

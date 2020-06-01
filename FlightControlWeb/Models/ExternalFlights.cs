@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class ExternalFlights
+    public class ExternalFlights : IExternalFlights
     {
         public static Dictionary<string, string> DicFlightServer;
-        public  async Task<FlightPlan> GetExternalFlightById(string id)
+        public async Task<FlightPlan> GetExternalFlightById(string id)
         {
             FlightPlan flightPlan = null;
             // List<FlightPlan> ex = new List<FlightPlan>();
@@ -53,7 +53,7 @@ namespace FlightControlWeb.Models
                 }
                 flightPlan = JsonConvert.DeserializeObject<FlightPlan>(strresulttest);
             }
-        //    }
+            //    }
 
             return flightPlan;
         }
