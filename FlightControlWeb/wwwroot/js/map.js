@@ -108,12 +108,13 @@ function SetMarker() {
 
 
 
-function showTable(id) {
+async function showTable(id) {
     // GET: api/FlightPlan/
-    fetch('api/FlightPlan/' + id)
+    await fetch('api/FlightPlan/' + id)
         .then(result => {
 
-            return result.json();
+            let object =  result.json();
+            return object;
         })
         .then(data => {
             addFlightDetail(data, id);
@@ -270,10 +271,10 @@ setInterval(function () {
 
 
 
-function reply_click(id) {
+async function reply_click(id) {
 
 
-    fetch('https://localhost:44300/api/Flights/' + id, {
+    await fetch('https://localhost:44300/api/Flights/' + id, {
         method: 'DELETE',
         body: id
     }).then(result => {
