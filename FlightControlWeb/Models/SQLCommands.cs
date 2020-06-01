@@ -324,6 +324,7 @@ namespace FlightControlWeb
         public Server serverById(string id)
         {
             Server server = null;
+            Database databaseObject = new Database();
             string query = $"SELECT * FROM Servers WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();

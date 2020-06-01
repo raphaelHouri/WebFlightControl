@@ -81,19 +81,26 @@ namespace FlightControlWeb.Models
                 WebRequest requestObjGet = WebRequest.Create(strurltest);
                 requestObjGet.Method = "GET";
                 WebResponse responseObjGet = null;
-                responseObjGet = await requestObjGet.GetResponseAsync();
-                string strresulttest = null;
-                using (Stream stream = responseObjGet.GetResponseStream())
+                try
                 {
-                    StreamReader sr = new StreamReader(stream);
-                    strresulttest = sr.ReadToEnd();
-                    sr.Close();
+                    responseObjGet = await requestObjGet.GetResponseAsync();
+                    string strresulttest = null;
+                    using (Stream stream = responseObjGet.GetResponseStream())
+                    {
+                        StreamReader sr = new StreamReader(stream);
+                        strresulttest = sr.ReadToEnd();
+                        sr.Close();
+                    }
+                    ex = JsonConvert.DeserializeObject<List<Flight>>(strresulttest);
+                    //add mapping from each id flight to the server id
+                    foreach (Flight item in ex)
+                    {
+                        DicFlightServer.Add(item.Flight_id, server.ServerId);
+                    }
                 }
-                ex = JsonConvert.DeserializeObject<List<Flight>>(strresulttest);
-                //add mapping from each id flight to the server id
-                foreach (Flight item in ex)
+                catch (Exception)
                 {
-                    DicFlightServer.Add(item.Flight_id, server.ServerId);
+                    Console.WriteLine("server failed");
                 }
             }
 
