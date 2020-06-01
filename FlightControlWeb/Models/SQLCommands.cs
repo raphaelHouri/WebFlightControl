@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb
 {
-    public class SQLCommands
+    public class SQLCommands : ISQLCommands
     {
         private Database databaseObject = new Database();
         //add plan to DB from the object we got from json
@@ -195,7 +195,7 @@ namespace FlightControlWeb
                     string company = $"{result["company"]}";
                     int passenger = Convert.ToInt32($"{result["passengers"]}");
                     //create initial location
-                    initialLocation = new InitialLocation( Convert.ToDouble($"{result["start_longitude"]}"), Convert.ToDouble($"{result["start_latitude"]}"), fromStringToDate($"{result["start_time"]}"));
+                    initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_longitude"]}"), Convert.ToDouble($"{result["start_latitude"]}"), fromStringToDate($"{result["start_time"]}"));
                     //create flightplan
                     flightPlan = new FlightPlan(passenger, company, initialLocation, segmentList(id));
 
@@ -325,7 +325,7 @@ namespace FlightControlWeb
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
-            
+
             if (result.HasRows)
             {
                 while (result.Read())
