@@ -12,7 +12,14 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class ServersController : ControllerBase
     {
-        private SQLCommands sql = new SQLCommands();
+        // private SQLCommands sql = new SQLCommands();
+        private readonly ISQLCommands sql;
+        
+        public ServersController(ISQLCommands sql)
+        {
+            this.sql = sql;
+        } 
+            
         // GET: api/Servers
         [HttpGet]
         public ActionResult<List<Server>> Get()

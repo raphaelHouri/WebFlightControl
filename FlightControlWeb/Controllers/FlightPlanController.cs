@@ -13,8 +13,15 @@ namespace FlightControlWeb.Controllers
     public class FlightPlanController : ControllerBase
     {
         //SQL part
-        private SQLCommands sql = new SQLCommands();
-        private ExternalFlights externalFlights = new ExternalFlights();
+        //  private SQLCommands sql = new SQLCommands();
+        //   private ExternalFlights externalFlights = new ExternalFlights();
+        private readonly ISQLCommands sql;
+        private readonly IExternalFlights externalFlights;
+        public FlightPlanController(IExternalFlights externalFlights, ISQLCommands sql)
+        {
+            this.externalFlights = externalFlights;
+            this.sql = sql;
+        }
 
         // GET: api/FlightPlan/5
         //xqxa4706KL

@@ -19,8 +19,16 @@ namespace FlightControlWeb.Controllers
     {
         private FlightCalculator calculator = new FlightCalculator();
         //SQL part
-        private SQLCommands sql = new SQLCommands();
-        private ExternalFlights externalFlights = new ExternalFlights();
+        // private SQLCommands sql = new SQLCommands();
+        //private ExternalFlights externalFlights = new ExternalFlights();
+
+        private readonly ISQLCommands sql;
+        private readonly IExternalFlights externalFlights;
+        public FlightsController(ISQLCommands sql,IExternalFlights externalFlights)
+        {
+            this.sql = sql;
+            this.externalFlights = externalFlights;
+        }
 
         //injection - we should get it in the constructor not new
         // private IProductManager flightManager = new ProductsManger();

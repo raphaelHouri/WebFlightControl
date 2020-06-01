@@ -7,7 +7,7 @@ using System.IO;
 
 namespace FlightControlWeb
 {
-    public  class Database
+    public class Database
     {
         /*private static Database instance = null;
         private static readonly object padlock = new object();*/
@@ -22,20 +22,20 @@ namespace FlightControlWeb
             }
         }
 
-   /*     public static Database Instance
-        {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new Database();
-                    }
-                    return instance;
-                }
-            }
-        }*/
+        /*     public static Database Instance
+             {
+                 get
+                 {
+                     lock (padlock)
+                     {
+                         if (instance == null)
+                         {
+                             instance = new Database();
+                         }
+                         return instance;
+                     }
+                 }
+             }*/
         public void OpenConnection()
         {
             if (myConnection.State != System.Data.ConnectionState.Open)
