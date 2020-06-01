@@ -42,8 +42,11 @@ namespace FlightControlWeb.Controllers
             {
                 //need to get flights from out servers
                 List<Flight> exFlights = await externalFlights.GetExternalFlights(relative_to);
-                exFlights = externalFlights.changeBoolEX(exFlights);
-                flights.AddRange(exFlights);
+                if(exFlights != null)
+                {
+                    exFlights = externalFlights.changeBoolEX(exFlights);
+                    flights.AddRange(exFlights);
+                }
             }
             //the list of flighs we will send to the cliet to update the markers
            
