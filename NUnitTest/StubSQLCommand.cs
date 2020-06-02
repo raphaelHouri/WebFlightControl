@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NUnitTest
 {
-    class FakeSQLCommand : ISQLCommands
+    class StubSQLCommand : ISQLCommands
 
     {
         public void addListSegmet(FlightPlan flightPlan, string id)
@@ -45,13 +45,15 @@ namespace NUnitTest
 
         public FlightPlanDB flightsplanById(string id)
         {
-            string company = "meshi";
-            int passenger = 150;
-            //create initial location
-            InitialLocation initialLocation = new InitialLocation(50, 70, fromStringToDate("2020 - 06-01T12:32:00Z"));
-            //create flightplan
-            FlightPlan flightPlan = new FlightPlan(passenger, company, initialLocation, segmentList(id));
-            return new FlightPlanDB("1234", flightPlan);
+            int passengers = 2;
+            string company_name = "ISRAIR";
+            string time = "2020-06-01T12:32:00Z";
+            DateTime dt = DateTime.Parse(time);
+            dt = TimeZoneInfo.ConvertTimeToUtc(dt);
+            InitialLocation initial_location = new InitialLocation(34.957610, 29.555631, dt);
+            List<Segment> segments = segmentList("test123");
+            FlightPlan flightPlan = new FlightPlan(passengers, company_name, initial_location, segments);
+            return new FlightPlanDB("test123", flightPlan);
         }
 
         public DateTime fromStringToDate(string time)
@@ -73,8 +75,10 @@ namespace NUnitTest
 
         public List<Segment> segmentList(string id)
         {
-            List<Segment> list = new List<Segment>();
-            return list;
+            List<Segment> segments = new List<Segment>(){
+             new Segment(35.211514,31.769399,10000)
+            };
+            return segments;
         }
 
         public Server serverById(string id)
