@@ -67,7 +67,7 @@ namespace NUnitTest
         public async Task GetFlightPlan_FlighInDb_ReturnFlightDbAsync()
         {
             //Arrange
-            string id = "test123";
+            string id = "test1";
             FlightPlan Expected = GetFlightExpected();
             StubSQLCommand stub = new StubSQLCommand();
             //FakeExternalFlight fakeExternalFlight = new FakeExternalFlight();
@@ -94,6 +94,39 @@ namespace NUnitTest
            Assert.AreEqual(object1Json, object2Json);
          //   Assert.AreEqual(Expected.C );
             mock.Verify(x=> x.GetExternalFlightById(id),Times.Never);
+        } 
+        
+        [Test]
+        public async Task GetFlightPlan_FlighInEx_ReturnFlightEXAsync()
+        {
+            //Arrange
+            string id = "test2";
+            FlightPlan Expected = GetFlightExpected();
+            StubSQLCommand stub = new StubSQLCommand();
+            //FakeExternalFlight fakeExternalFlight = new FakeExternalFlight();
+            Mock<IExternalFlights> mock = new Mock<IExternalFlights>();
+            //FlightPlan fake = FakeExternalFlight();
+            mock.Setup(x => x.GetExternalFlightById(id))
+                .Returns(FakeExternalFlight());
+            //injection with the fake data
+            FlightPlanController flightPlanController = new FlightPlanController(mock.Object, stub);
+           
+            //Act
+            var result = await flightPlanController.GetFlightPlan(id);
+            ActionResult mod = result.Result;
+            var ok = mod as OkObjectResult;
+            FlightPlan resultFlight = (FlightPlan)ok.Value;
+           // var flight = result.Value;
+             //var flight = result.Result;
+             //var a=flight.();
+           
+
+            //Assert
+            var object1Json = JsonConvert.SerializeObject(Expected);
+            var object2Json = JsonConvert.SerializeObject(resultFlight);
+           Assert.AreEqual(object1Json, object2Json);
+         //   Assert.AreEqual(Expected.C );
+            mock.Verify(x=> x.GetExternalFlightById(id),Times.Once);
         }
 
         

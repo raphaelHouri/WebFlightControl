@@ -45,15 +45,23 @@ namespace NUnitTest
 
         public FlightPlanDB flightsplanById(string id)
         {
-            int passengers = 2;
-            string company_name = "ISRAIR";
-            string time = "2020-06-01T12:32:00Z";
-            DateTime dt = DateTime.Parse(time);
-            dt = TimeZoneInfo.ConvertTimeToUtc(dt);
-            InitialLocation initial_location = new InitialLocation(34.957610, 29.555631, dt);
-            List<Segment> segments = segmentList("test123");
-            FlightPlan flightPlan = new FlightPlan(passengers, company_name, initial_location, segments);
-            return new FlightPlanDB("test123", flightPlan);
+            if (id == "test1")
+            {
+                int passengers = 2;
+                string company_name = "ISRAIR";
+                string time = "2020-06-01T12:32:00Z";
+                DateTime dt = DateTime.Parse(time);
+                dt = TimeZoneInfo.ConvertTimeToUtc(dt);
+                InitialLocation initial_location = new InitialLocation(34.957610, 29.555631, dt);
+                List<Segment> segments = segmentList("test1");
+                FlightPlan flightPlan = new FlightPlan(passengers, company_name, initial_location, segments);
+                return new FlightPlanDB("test1", flightPlan);
+            }
+            //test 2
+            else
+            {
+                return null;
+            }
         }
 
         public DateTime fromStringToDate(string time)
