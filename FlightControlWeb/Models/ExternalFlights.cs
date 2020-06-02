@@ -115,14 +115,31 @@ namespace FlightControlWeb.Models
             }
             return flights;
         }
-        /*   public async Task<string> try1()
-               {
-               WebResponse responseObjGet = null;
-               responseObjGet = await requestObjGet.GetResponseAsync();
 
-            HttpWebResponse responseObjGet = null;
-                   responseObjGet = await (HttpWebResponse)requestObjGet.GetResponse();
-           }*/
 
+        //public async Task<FlightPlan> GetFlightPlanIdNoError(string id)
+        //{
+        //    //find the flighplan in db
+        //    FlightPlanDB flightPlanDB = commands.flightsplanById(id);
+        //    FlightPlan flightPlan;
+        //    if (flightPlanDB == null)
+        //    {
+        //        try
+        //        {
+        //            flightPlan = await this.GetExternalFlightById(id);
+
+        //        }
+        //        catch
+        //        {
+        //            flightPlan = null;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        flightPlan = flightPlanDB.GetFlightPlan();
+        //    }
+
+        //    return flightPlan;
+        //}
     }
 }

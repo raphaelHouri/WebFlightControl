@@ -8,5 +8,6 @@ namespace FlightControlWeb.Models
         List<Flight> changeBoolEX(List<Flight> flights);
         Task<FlightPlan> GetExternalFlightById(string id);
         Task<List<Flight>> GetExternalFlights(string time);
+    //    Task<FlightPlan> GetFlightPlanIdNoError(string id);
     }
 }
