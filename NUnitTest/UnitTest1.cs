@@ -18,12 +18,6 @@ namespace NUnitTest
     [TestFixture]
     public class Tests
     {
-
-        public FlightPlan try1(FlightPlan blas)
-            {
-
-            return null;
-            }
         
         public FlightPlan GetFlightExpected()
         {
