@@ -21,7 +21,7 @@ function initMap() {
 
 }
 //clean markers that not supposed to appear
-function SetMarkerWithoutData() {
+function setMarkerWithoutData() {
     if (markers.length == 0) {
         return;
     }
@@ -48,7 +48,7 @@ function removeDetailsMarkers() {
 }
 
 //set the details off each marker we get
-function SetMarker() {
+function setMarker() {
 
     removeMarkers();
 
@@ -59,7 +59,7 @@ function SetMarker() {
         let data = markers[i];
         //let myLatlng = new google.maps.LatLng(data.latitude, data.longitude);
         let marker = new google.maps.Marker({
-            position: new coordinate(markers[i].latitude, markers[i].longitude),
+            position: new Coordinate(markers[i].latitude, markers[i].longitude),
             //position: myLatlng,
             map: map,
             title: data.title
@@ -164,9 +164,9 @@ async function getAllFlight() {
         //create list flight from json file
         let data = await response.json();
         addDetailsFlights(data);
-        SetMarker();
+        setMarker();
     } else {
-        SetMarkerWithoutData()
+        setMarkerWithoutData()
     }
 }
 
@@ -290,7 +290,7 @@ function createListPathCoord(user) {
     return listCoord;
 }
 
-class coordinate {
+class Coordinate {
     constructor(lat, lng) {
         this.lat = lat;
         this.lng = lng;
