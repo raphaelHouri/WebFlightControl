@@ -1,13 +1,10 @@
-﻿let firstTime = true;
-let flagData ;
-let flagExist = 0;
+﻿let flagExist = 0;
 let markers = [];
 let markerList = [];
 let map;
 let options;
 let flightPlanCoordinates = [];
 let flightPath;
-
 let ExsitLine = false;
 
 function initMap() {
@@ -21,9 +18,9 @@ function initMap() {
 
     // New map
     map = new google.maps.Map(document.getElementById('map'), options);
-    //getAllFlight();
-    //SetMarker();
+
 }
+//clean markers that not supposed to appear
 function SetMarkerWithoutData() {
     if (markers.length == 0) {
         return;
@@ -32,6 +29,7 @@ function SetMarkerWithoutData() {
     removeDetailsMarkers();
     markers = [];
 }
+//clean the list of markers
 function removeMarkers() {
     for (let i = 0; i < markerList.length; i++) {
         //Remove previous Marker.
@@ -41,6 +39,7 @@ function removeMarkers() {
     }
     markerList = []
 }
+//remove the display element of each flight
 function removeDetailsMarkers() {
     markers.forEach(function (item) {
         let myobj = document.getElementById(item.flight_id);
@@ -48,7 +47,7 @@ function removeDetailsMarkers() {
     });
 }
 
-
+//set the details off each marker we get
 function SetMarker() {
 
     removeMarkers();
@@ -69,7 +68,6 @@ function SetMarker() {
         marker.setIcon('/src/image/plane.png');
         markerList.push(marker);
 
-
         //Create and open InfoWindow.
         let infoWindow = new google.maps.InfoWindow({
             content: `${data.flight_id} ${data.company_name}`,
@@ -79,7 +77,7 @@ function SetMarker() {
         marker.addListener('mouseover', () => infoWindow.open(map, marker))
         marker.addListener('mouseout', () => infoWindow.close())
 
-
+        //when we click on marker display the table flight
         marker.addListener('click', function () {
             flagExist = 1;
             showTable(infoWindow.object.flight_id)
@@ -89,6 +87,7 @@ function SetMarker() {
                 ExsitLine = false;
             }
         });
+        //if append click on the map display clean marker elements 
         google.maps.event.addListener(map, 'click', function (e) {
             if (flagExist == 1) {
                 let elmnt = document.getElementById("flightDetail1");
@@ -102,19 +101,19 @@ function SetMarker() {
             }
         });
     }
-
 }
 
 
 
-async function showTable(id) { // (1)
-        // GET: api/FlightPlan/
-    let response = await fetch('api/FlightPlan/' + id); 
-
+async function showTable(id) { 
+    // GET: api/FlightPlan/
+    let response = await fetch('api/FlightPlan/' + id);
+    //good response 
     if (response.status == 200) {
-        let data = await response.json(); 
+        let data = await response.json();
         await addFlightDetail(data, id)
     } else {
+        //bad response 
         throw new Error(response.status);
 
     }
@@ -122,26 +121,9 @@ async function showTable(id) { // (1)
 }
 
 
-
-//async function showTable(id) {
-//    // GET: api/FlightPlan/
-//    await fetch('api/FlightPlan/' + id)
-//        .then(result => {
-
-//            let object =  result.json();
-//            return object;
-//        })
-//        .then(data => {
-//            addFlightDetail(data, id);
-//        })
-//        .catch(error => {
-//            alert(error);
-
-//        });
-//}
-
+//add flight detail for the table details
 function addFlightDetail(user, id) {
-    let dateLanding = getEndTime(user.segments, user.initial_location.date_time );
+    let dateLanding = getEndTime(user.segments, user.initial_location.date_time);
     let segLength = user.segments.length;
     let output = '<div>Flights:</div>';
     output +=
@@ -157,8 +139,8 @@ function addFlightDetail(user, id) {
                   </tr>`
         ;
     document.getElementById('output').innerHTML = output;
+    //list of coord for the path of the plain
     flightPlanCoordinates = createListPathCoord(user);
-
     flightPath = new google.maps.Polyline({
         path: flightPlanCoordinates,
         strokeColor: "#FF0000",
@@ -172,73 +154,23 @@ function addFlightDetail(user, id) {
 
 
 
-
-
-async function getAllFlight() { 
-    flagData = false
+async function getAllFlight() {
+    //get current utc time
     let time = getUTCTime()
-
-    let response = await fetch("/api/Flights?relative_to=" + time + "&sync_all"); 
-
+    //ask for all the planes that flight now
+    let response = await fetch("/api/Flights?relative_to=" + time + "&sync_all");
     if (response.status == 200) {
-        let data = await response.json(); 
+        //create list flight from json file
+        let data = await response.json();
         addDetailsFlights(data);
         SetMarker();
     } else {
-
         SetMarkerWithoutData()
-
     }
-
 }
 
-//function getAllFlight() {
-//    flagData = false
-//    let time = getUTCTime()
-//    let flightsUrl = "api/Flights";
-//    $.ajax({
-//        type: "GET",
-//        url: flightsUrl,
-//        dataType: 'json',
-//        data: {
-//            relative_to: time
-//        }, success: function (data) {
-//            flagData = true
-//            addDetailsFlights(data);
-//            SetMarker();
-//        },
-//        error: function (error) {
-//            console.log(error)
-//            SetMarkerWithoutData()
-//        }
-//    });
 
-//}
-
-
-//function getAllFlight() {
-//    let time = getUTCTime()
-//    flagData = false
-
-//    fetch("https://localhost:44300/api/Flights?relative_to=" + time)
-//        .then(result => {
-
-//            return result.json();
-//        })
-//        .then(data => {
-//                flagData = true
-//                console.log(data);
-//                addDetailsFlights(data);
-         
-
-//        })
-//        .catch(error => {
-//            console.log(error)
-//        });
-
-//}
-
-
+//updat the left side screen with the table of extrnal flight and internal flight
 function addDetailsFlights(data) {
     let outputMyFlight =
         `<div class="item clearfix">
@@ -252,23 +184,15 @@ function addDetailsFlights(data) {
     let outputExFlight =
         `<div class="item clearfix">
                                 <div class="item__description" ><h6>ID</h6></div>
-
                                 <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
                                 <div class="right clearfix">
                                 </div>
                         </div>
                        </div>`;
-
     removeDetailsMarkers();
-
-        markers = data;
-
-
-
+    markers = data;
 
     data.forEach(function (user) {
-
-        console.log(user);
 
         if (!user.is_external) {
             outputMyFlight +=
@@ -298,24 +222,19 @@ function addDetailsFlights(data) {
     document.getElementById('outputExFlight').innerHTML = outputExFlight;
 }
 
-
+//the main loop always running
 setInterval(function () {
     getAllFlight()
+}, 3000);
 
-    //SetMarker();
+//delete when we click on  delete button
+async function reply_click(id) {
 
-}, 9000);
-
-
-
-
-async function reply_click(id) { 
-
-    let response = await  fetch('/api/Flights/' + id, {
+    let response = await fetch('/api/Flights/' + id, {
         method: 'DELETE',
         body: id
-    }); 
-
+    });
+    //good respons the flight delete
     if (response.status == 200) {
         alert(id + ' delete from DB');
         getAllFlight();
@@ -326,37 +245,12 @@ async function reply_click(id) {
     } else {
         try {
             throw new Error(response.status);
-        } catch(error){
+        } catch (error) {
             alert(error)
         }
     }
-
 }
 
-//async function reply_click(id) {
-
-
-//    await fetch('https://localhost:44300/api/Flights/' + id, {
-//        method: 'DELETE',
-//        body: id
-//    }).then(result => {
-//        alert(id + ' delete from DB');
-//        //let myobj = document.getElementById(id);
-//        //myobj.remove();
-//        getAllFlight();
-
-//        if (ExsitLine) {
-//            flightPath.setMap(null);
-//            ExsitLine = false;
-//        }
-//    })
-//        .catch(error => {
-//            alert(error);
-
-//        });
-
-
-//}
 function getEndTime(seg, startTime) {
     let sumSeconds = 0;
     for (let i = 0; i < seg.length; i++) {
@@ -374,14 +268,14 @@ function getEndTime(seg, startTime) {
     let n = now_utc.toISOString();
     return n;
 }
+
 function getUTCTime() {
-    var date1 = new Date().toISOString().slice(0, -5) + 'Z';
+    let date1 = new Date().toISOString().slice(0, -5) + 'Z';
     date1 = date1.replace(/T/g, " ");
-
-
     return date1;
 }
 
+//create the list of path flight 
 function createListPathCoord(user) {
     let listCoord = [];
     listCoord.push(new google.maps.LatLng(user.initial_location.latitude, user.initial_location.longitude));
@@ -392,7 +286,6 @@ function createListPathCoord(user) {
     })
     return listCoord;
 }
-
 
 class coordinate {
     constructor(lat, lng) {
