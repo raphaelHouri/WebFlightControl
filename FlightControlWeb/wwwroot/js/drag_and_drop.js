@@ -28,7 +28,7 @@ function highlight() {
         <div id="drop-area"><div id="dragText"><form class="my-form">
         <p>Upload multiple files with the file dialog or by dragging and dropping
         images onto the dashed region</p>
-        <input type="file" id="fileElem" multiple accept="image/*" 
+        <input type="file" id="fileElem" multiple accept="image" 
         onchange="handleFiles(this.files)">
         <label class="button" for="fileElem">Select some files</label>
     </form>
@@ -83,7 +83,7 @@ async function uploadFile(file) {
     if (response.status == 201) {
         await response.json();
         appendItem();
-        alert("New flight plan added to the data base");
+        //alert("New flight plan added to the data base");
     } else {
         try {
             throw new Error(response.status);

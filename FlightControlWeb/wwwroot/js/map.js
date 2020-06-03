@@ -134,7 +134,7 @@ function addFlightDetail(user, id) {
         ${user.segments[segLength - 1].latitude}</th>
         <th>${user.initial_location.date_time}</th>
         <th>${dateLanding}</th>
-        <th>${user.company_Name}</th>
+        <th>${user.company_name}</th>
         <th>${user.passengers}</th>
 
         </tr>`
@@ -227,7 +227,7 @@ function addDetailsFlights(data) {
 //the main loop always running
 setInterval(function () {
     getAllFlight()
-}, 3000);
+}, 1000);
 
 //delete when we click on  delete button
 async function reply_click(id) {
