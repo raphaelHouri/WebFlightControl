@@ -23,18 +23,21 @@ function preventDefaults(e) {
     e.stopPropagation();
 }
 //when we drag to the place this elements will appear
-function highlight(e) {
-    let output1 = `                    <div id="drop-area"><div id="dragText"><form class="my-form">
-                                <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
-                                <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
-                                <label class="button" for="fileElem">Select some files</label>
-                            </form>
-                            <progress id="progress-bar" max=100 value=0></progress>
-                            <div id="gallery" /><div/><div/>`;
+function highlight() {
+    let output1 = `             
+        <div id="drop-area"><div id="dragText"><form class="my-form">
+        <p>Upload multiple files with the file dialog or by dragging and dropping
+        images onto the dashed region</p>
+        <input type="file" id="fileElem" multiple accept="image/*" 
+        onchange="handleFiles(this.files)">
+        <label class="button" for="fileElem">Select some files</label>
+    </form>
+    <progress id="progress-bar" max=100 value=0></progress>
+    <div id="gallery" /><div/><div/>`;
     document.getElementById("addOutput").innerHTML = output1;
 }
 //when we drop it already this elements will disappear
-function unhighlight(e) {
+function unhighlight() {
     let myobj = document.getElementById("drop-area");
     myobj.remove();
 }

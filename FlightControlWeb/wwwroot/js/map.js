@@ -88,7 +88,7 @@ function SetMarker() {
             }
         });
         //if append click on the map display clean marker elements 
-        google.maps.event.addListener(map, 'click', function (e) {
+        google.maps.event.addListener(map, 'click', function () {
             if (flagExist == 1) {
                 let elmnt = document.getElementById("flightDetail1");
                 elmnt.remove();
@@ -105,7 +105,7 @@ function SetMarker() {
 
 
 
-async function showTable(id) { 
+async function showTable(id) {
     // GET: api/FlightPlan/
     let response = await fetch('api/FlightPlan/' + id);
     //good response 
@@ -127,17 +127,18 @@ function addFlightDetail(user, id) {
     let segLength = user.segments.length;
     let output = '<div>Flights:</div>';
     output +=
-        `<tr id="flightDetail1" style="font-size: small;">
-                    <th>${id}</th>
-                    <th>${user.initial_location.latitude} , ${user.initial_location.longitude}</th>
-                    <th>${user.segments[segLength - 1].longitude} , ${user.segments[segLength - 1].latitude}</th>
-                    <th>${user.initial_location.date_time}</th>
-                    <th>${dateLanding}</th>
-                    <th>${user.company_Name}</th>
-                    <th>${user.passengers}</th>
+    `<tr id="flightDetail1" style="font-size: small;">
+        <th>${id}</th>
+        <th>${user.initial_location.latitude} , ${user.initial_location.longitude}</th>
+        <th>${user.segments[segLength - 1].longitude} ,
+        ${user.segments[segLength - 1].latitude}</th>
+        <th>${user.initial_location.date_time}</th>
+        <th>${dateLanding}</th>
+        <th>${user.company_Name}</th>
+        <th>${user.passengers}</th>
 
-                  </tr>`
-        ;
+        </tr>`
+    ;
     document.getElementById('output').innerHTML = output;
     //list of coord for the path of the plain
     flightPlanCoordinates = createListPathCoord(user);
@@ -173,22 +174,22 @@ async function getAllFlight() {
 //updat the left side screen with the table of extrnal flight and internal flight
 function addDetailsFlights(data) {
     let outputMyFlight =
-        `<div class="item clearfix">
-                                <div class="item__description" ><h6>ID</h6></div>
+    `<div class="item clearfix">
+            <div class="item__description" ><h6>ID</h6></div>
 
-                                <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
-                                <div class="right clearfix">
-                                </div>
-                        </div>
-                       </div>`;
+                <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
+                <div class="right clearfix">
+                </div>
+            </div>
+    </div>`;
     let outputExFlight =
         `<div class="item clearfix">
-                                <div class="item__description" ><h6>ID</h6></div>
-                                <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
-                                <div class="right clearfix">
-                                </div>
-                        </div>
-                       </div>`;
+            <div class="item__description" ><h6>ID</h6></div>
+                <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
+                <div class="right clearfix">
+                </div>
+            </div>
+         </div>`;
     removeDetailsMarkers();
     markers = data;
 
@@ -196,26 +197,27 @@ function addDetailsFlights(data) {
 
         if (!user.is_external) {
             outputMyFlight +=
-                `<div class="item clearfix" id="${user.flight_id}">
-                                <div class="item__description" >${user.flight_id}</div>
+            `<div class="item clearfix" id="${user.flight_id}">
+                 <div class="item__description" >${user.flight_id}</div>
 
-                                <div class="item__description" style="text-indent :1em">${user.company_name}</div>
-                                <div class="right clearfix">
-                                    <div class="item__delete" style="text-indent :1em">
-                                        <button class="item__delete--btn" onClick="reply_click('${user.flight_id}')"><i class="ion-ios-close-outline"></i></button>
-                                    </div>
-                                </div>
-                        </div>
-                       </div>`;
+                <div class="item__description" style="text-indent :1em">${user.company_name}</div>
+                <div class="right clearfix">
+                <div class="item__delete" style="text-indent :1em">
+                    <button class="item__delete--btn" onClick="reply_click('${user.flight_id}')">
+                    <i class="ion-ios-close-outline"></i></button>
+                </div>
+                </div>
+                </div>
+            </div>`;
 
 
         } else {
             outputExFlight +=
-                ` <div class="item clearfix" id="${user.flight_id}">
-                                <div class="item__description">${user.flight_id}</div>
-                                <div class="item__description" style="text-indent :1em">${user.company_name}</div>
-                            </div>
-                           </div>`;
+            ` <div class="item clearfix" id="${user.flight_id}">
+                <div class="item__description">${user.flight_id}</div>
+                <div class="item__description" style="text-indent :1em">${user.company_name}</div>
+           </div>
+            </div>`;
         }
     });
     document.getElementById('outputMyFlight').innerHTML = outputMyFlight;
@@ -278,7 +280,8 @@ function getUTCTime() {
 //create the list of path flight 
 function createListPathCoord(user) {
     let listCoord = [];
-    listCoord.push(new google.maps.LatLng(user.initial_location.latitude, user.initial_location.longitude));
+    listCoord.push(new google.maps.LatLng(user.initial_location.latitude,
+        user.initial_location.longitude));
 
     user.segments.forEach(function (item) {
 

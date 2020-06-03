@@ -21,21 +21,29 @@ namespace FlightControlWeb
         {
             string id = createId();
             Coordinate coord = getEndCoors(flightPlan.Segments);
-            DateTime endTime = getEndTime(flightPlan.Segments, flightPlan.Initial_Location.Date_Time);
-
-            DateTime statTime = TimeZoneInfo.ConvertTimeToUtc(flightPlan.Initial_Location.Date_Time);
+            //get the end time of the flight
+            DateTime endTime = getEndTime(flightPlan.Segments,
+                flightPlan.Initial_Location.Date_Time);
+            DateTime statTime = TimeZoneInfo.ConvertTimeToUtc(
+                flightPlan.Initial_Location.Date_Time);
             string statTimeString = statTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
             endTime = TimeZoneInfo.ConvertTimeToUtc(endTime);
             string endTimeString = endTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
 
             ////// INSERT INTO DATABASE
-            string query = "INSERT INTO Flight ('id', 'start_latitude','start_longitude','end_latitude','end_longitude','start_time','end_time', 'company', 'passengers') VALUES (@id, @start_latitude, @start_longitude, @end_latitude, @end_longitude ,@start_time, @end_time, @company, @passengers );";
+            string query = "INSERT INTO Flight ('id', 'start_latitude'," +
+                "'start_longitude','end_latitude','end_longitude','start_time'," +
+                "'end_time', 'company', 'passengers') VALUES (@id, @start_latitude," +
+                " @start_longitude, @end_latitude, @end_longitude ,@start_time," +
+                " @end_time, @company, @passengers );";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             myCommand.Parameters.AddWithValue("@id", id);
-            myCommand.Parameters.AddWithValue("@start_latitude", flightPlan.Initial_Location.Latitude);
-            myCommand.Parameters.AddWithValue("@start_longitude", flightPlan.Initial_Location.Longitude);
+            myCommand.Parameters.AddWithValue("@start_latitude",
+                flightPlan.Initial_Location.Latitude);
+            myCommand.Parameters.AddWithValue("@start_longitude",
+                flightPlan.Initial_Location.Longitude);
             myCommand.Parameters.AddWithValue("@end_latitude", coord.Lat);
             myCommand.Parameters.AddWithValue("@end_longitude", coord.Lng);
             myCommand.Parameters.AddWithValue("@start_time", statTimeString);
@@ -61,7 +69,9 @@ namespace FlightControlWeb
             int length = flightPlan.Segments.Count;
             for (int i = 0; i < length; i++)
             {
-                string query = "INSERT INTO Segments ('id', 'serial','longitude', 'latitude','timespan') VALUES (@id, @serial, @longitude, @latitude, @timespan );";
+                string query = "INSERT INTO Segments ('id', 'serial','longitude'," +
+                    " 'latitude','timespan') VALUES (@id, @serial, @longitude," +
+                    " @latitude, @timespan );";
                 SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
 
 
@@ -70,7 +80,8 @@ namespace FlightControlWeb
                 myCommand.Parameters.AddWithValue("@serial", i);
                 myCommand.Parameters.AddWithValue("@longitude", flightPlan.Segments[i].Longitude);
                 myCommand.Parameters.AddWithValue("@latitude", flightPlan.Segments[i].Latitude);
-                myCommand.Parameters.AddWithValue("@timespan", flightPlan.Segments[i].Timespan_Seconds);
+                myCommand.Parameters.AddWithValue("@timespan",
+                    flightPlan.Segments[i].Timespan_Seconds);
                 int result = myCommand.ExecuteNonQuery();
                 if (result > 0)
                 {
@@ -88,7 +99,7 @@ namespace FlightControlWeb
         //delete row details from the two table
         public void deleteRow(string id)
         {
-
+            // delete flight from flight table bty id
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
@@ -102,6 +113,8 @@ namespace FlightControlWeb
                 Console.WriteLine(result);
             }
             databaseObject.CloseConnection();
+            // delete segments from segments table by id
+
             query = $"DELETE FROM Segments WHERE id = '{id}';";
             myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
@@ -134,8 +147,10 @@ namespace FlightControlWeb
             {
                 while (result.Read())
                 {
-
-                    segment = new Segment(Convert.ToDouble($"{result["longitude"]}"), Convert.ToDouble($"{result["latitude"]}"), Convert.ToDouble($"{result["timespan"]}"));
+                    //get row after row from the DB
+                    segment = new Segment(Convert.ToDouble($"{result["longitude"]}"),
+                        Convert.ToDouble($"{result["latitude"]}"),
+                        Convert.ToDouble($"{result["timespan"]}"));
                     segmentList.Add(segment);
                 }
             }
@@ -152,7 +167,8 @@ namespace FlightControlWeb
             FlightPlanDB flightPlanDB;
             //FlightPlan flightPlan;
             //string query = $"SELECT * FROM Flight WHERE '{time}'> start_time ";
-            string query = $"SELECT * FROM Flight WHERE ('{time}'>= start_time) AND ('{time}' <= end_time)";
+            string query =
+                $"SELECT * FROM Flight WHERE ('{time}'>= start_time) AND ('{time}' <= end_time)";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
@@ -166,7 +182,6 @@ namespace FlightControlWeb
                 {
                     //get id
                     string id = $"{result["id"]}";
-
                     flightPlanDB = flightsplanById(id);
                     flightsList.Add(flightPlanDB);
                 }
@@ -198,10 +213,13 @@ namespace FlightControlWeb
                     string company = $"{result["company"]}";
                     int passenger = Convert.ToInt32($"{result["passengers"]}");
                     //create initial location
-                    initialLocation = new InitialLocation(Convert.ToDouble($"{result["start_longitude"]}"), Convert.ToDouble($"{result["start_latitude"]}"), fromStringToDate($"{result["start_time"]}"));
+                    initialLocation = new InitialLocation(Convert.ToDouble(
+                        $"{result["start_longitude"]}"),
+                        Convert.ToDouble($"{result["start_latitude"]}"), 
+                        fromStringToDate($"{result["start_time"]}"));
                     //create flightplan
-                    flightPlan = new FlightPlan(passenger, company, initialLocation, segmentList(id));
-
+                    flightPlan = new FlightPlan(passenger, company,
+                        initialLocation, segmentList(id));
                     flightPlanDB = new FlightPlanDB(id, flightPlan);
 
                 }
@@ -214,18 +232,21 @@ namespace FlightControlWeb
         }
 
 
-
+        
         public string createId()
         {
             RandomGenerator generator = new RandomGenerator();
             return generator.RandomPassword();
         }
+        //get the end coord
         public Coordinate getEndCoors(List<Segment> seg)
         {
             int lastSegIndex = seg.Count - 1;
-            Coordinate coord = new Coordinate(seg[lastSegIndex].Latitude, seg[lastSegIndex].Latitude);
+            Coordinate coord = new Coordinate(seg[lastSegIndex].Latitude,
+                seg[lastSegIndex].Latitude);
             return coord;
         }
+        //get end time of the flight
         public DateTime getEndTime(List<Segment> seg, DateTime startTime)
         {
             double sumSeconds = 0;
@@ -236,6 +257,7 @@ namespace FlightControlWeb
             return startTime.AddSeconds(sumSeconds);
 
         }
+        //convert string to date object
         public DateTime fromStringToDate(string time)
         {
 
@@ -322,6 +344,7 @@ namespace FlightControlWeb
             return ServerList;
 
         }
+        //return server url by id
         public Server serverById(string id)
         {
             Server server = null;
@@ -345,12 +368,5 @@ namespace FlightControlWeb
             return server;
 
         }
-
-
-
-
     }
-
-
-
 }

@@ -30,7 +30,8 @@ namespace NUnitTest
             List<Segment> segments = new List<Segment>(){
              new Segment(35.211514,31.769399,10000)
             };
-            FlightPlan flightPlanExpected = new FlightPlan(passengers, company_name, initial_location, segments);
+            FlightPlan flightPlanExpected = new FlightPlan(passengers, company_name, 
+                initial_location, segments);
             return flightPlanExpected;
         }
         public Task<FlightPlan> FakeExternalFlight()
@@ -46,7 +47,8 @@ namespace NUnitTest
                 List<Segment> segments = new List<Segment>(){
              new Segment(35.211514,31.769399,10000)
             };
-                FlightPlan flightPlanExpected = new FlightPlan(passengers, company_name, initial_location, segments);
+                FlightPlan flightPlanExpected = new FlightPlan(passengers, company_name,
+                    initial_location, segments);
                 return flightPlanExpected;
             });
 
@@ -70,7 +72,8 @@ namespace NUnitTest
             mock.Setup(x => x.GetExternalFlightById(id))
                 .Returns(FakeExternalFlight());
             //injection with the fake data
-            FlightPlanController flightPlanController = new FlightPlanController(mock.Object, stub);
+            FlightPlanController flightPlanController =
+                new FlightPlanController(mock.Object, stub);
            
             //Act
             var result = await flightPlanController.GetFlightPlan(id);
@@ -103,7 +106,8 @@ namespace NUnitTest
             mock.Setup(x => x.GetExternalFlightById(id))
                 .Returns(FakeExternalFlight());
             //injection with the fake data
-            FlightPlanController flightPlanController = new FlightPlanController(mock.Object, stub);
+            FlightPlanController flightPlanController =
+                new FlightPlanController(mock.Object, stub);
            
             //Act
             var result = await flightPlanController.GetFlightPlan(id);
