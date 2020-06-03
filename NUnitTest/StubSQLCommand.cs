@@ -54,7 +54,8 @@ namespace NUnitTest
                 dt = TimeZoneInfo.ConvertTimeToUtc(dt);
                 InitialLocation initial_location = new InitialLocation(34.957610, 29.555631, dt);
                 List<Segment> segments = segmentList("test1");
-                FlightPlan flightPlan = new FlightPlan(passengers, company_name, initial_location, segments);
+                FlightPlan flightPlan = new FlightPlan(passengers, company_name,
+                    initial_location, segments);
                 return new FlightPlanDB("test1", flightPlan);
             }
             //test 2

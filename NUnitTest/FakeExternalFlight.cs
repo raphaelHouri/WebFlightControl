@@ -26,7 +26,8 @@ namespace NUnitTest
                 //create initial location
                 InitialLocation initialLocation = new InitialLocation(50, 70, dt);
                 List<Segment> segmentsList = new List<Segment>();
-                FlightPlan flightPlan = new FlightPlan(passenger, company, initialLocation, segmentsList);
+                FlightPlan flightPlan = new FlightPlan(passenger, company,
+                    initialLocation, segmentsList);
 
                 return flightPlan;
             });

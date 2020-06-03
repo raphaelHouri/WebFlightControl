@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb
 {
-    //taken from https://www.c-sharpcorner.com/article/generating-random-number-and-string-in-C-Sharp/
+//taken from https://www.c-sharpcorner.com/article/generating-random-number-and-string-in-C-Sharp/
     public class RandomGenerator
     {
         // Generate a random number between two numbers    

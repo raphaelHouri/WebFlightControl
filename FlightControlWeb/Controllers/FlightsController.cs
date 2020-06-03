@@ -30,7 +30,8 @@ namespace FlightControlWeb.Controllers
         //injection
         // GET: api/Flights?relative_to=<DATE_TIME>
         [HttpGet]
-        public async Task<ActionResult<List<Flight>>> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
+        public async Task<ActionResult<List<Flight>>> 
+            GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
         {
             List<Flight> flights = new List<Flight>();
             bool checkSyncAll = Request.Query.ContainsKey("sync_all");
@@ -58,7 +59,8 @@ namespace FlightControlWeb.Controllers
                 double diff = calculator.SubTime(flightPlan.Initial_Location.Date_Time, relative_to);
                 //interpolsion-get the current point
                 Coordinate currentPlace = calculator.CurrentPlace(relative_to, flightPlan, diff);
-                flights.Add(new Flight(id, currentPlace.Lng, currentPlace.Lat, flightPlan.Passengers, flightPlan.Company_Name, flightPlan.Initial_Location.Date_Time, false));
+                flights.Add(new Flight(id, currentPlace.Lng, currentPlace.Lat, flightPlan.Passengers,
+                    flightPlan.Company_Name, flightPlan.Initial_Location.Date_Time, false));
             }
             if (flights.Count==0)
             {
@@ -85,10 +87,6 @@ namespace FlightControlWeb.Controllers
                 return NotFound(id);
             }
         }
-
-
-
-
     }
 }
 
