@@ -178,7 +178,7 @@ async function getAllFlight() {
     flagData = false
     let time = getUTCTime()
 
-    let response = await fetch("https://localhost:44300/api/Flights?relative_to=" + time + "&sync_all"); 
+    let response = await fetch("/api/Flights?relative_to=" + time + "&sync_all"); 
 
     if (response.status == 200) {
         let data = await response.json(); 
@@ -311,7 +311,7 @@ setInterval(function () {
 
 async function reply_click(id) { 
 
-    let response = await  fetch('https://localhost:44300/api/Flights/' + id, {
+    let response = await  fetch('/api/Flights/' + id, {
         method: 'DELETE',
         body: id
     }); 
