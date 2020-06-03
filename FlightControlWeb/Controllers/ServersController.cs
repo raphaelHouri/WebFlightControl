@@ -32,14 +32,6 @@ namespace FlightControlWeb.Controllers
             return Ok(syncServers);
         }
 
-      /*  // GET: api/Servers/5
-        [HttpGet("{id}", Name = "GetServer")]
-        public string GetServer(int id)
-        {
-
-            return "value";
-        }*/
-
         // POST: api/Servers
         [HttpPost]
         public ActionResult Post([FromBody] Server server)

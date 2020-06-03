@@ -12,9 +12,6 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        //SQL part
-        //  private SQLCommands sql = new SQLCommands();
-        //   private ExternalFlights externalFlights = new ExternalFlights();
         private readonly ISQLCommands sql;
         private readonly IExternalFlights externalFlights;
         public FlightPlanController(IExternalFlights externalFlights, ISQLCommands sql)
@@ -24,7 +21,6 @@ namespace FlightControlWeb.Controllers
         }
 
         // GET: api/FlightPlan/5
-        //xqxa4706KL
         [HttpGet("{id}", Name = "GetFlightPlan")]
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
@@ -60,8 +56,6 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] FlightPlan p)
         {
-            // p.Id = 5;
-            // return CreatedAtAction(actionName: "GetItem", new { id = p.Id }, p);
             try
             {
                 sql.addPlan(p);
@@ -75,10 +69,5 @@ namespace FlightControlWeb.Controllers
 
         }
 
-      /*  // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }*/
     }
 }
