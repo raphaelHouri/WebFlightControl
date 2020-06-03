@@ -18,9 +18,6 @@ namespace FlightControlWeb.Controllers
     public class FlightsController : ControllerBase
     {
         private FlightCalculator calculator = new FlightCalculator();
-        //SQL part
-        // private SQLCommands sql = new SQLCommands();
-        //private ExternalFlights externalFlights = new ExternalFlights();
 
         private readonly ISQLCommands sql;
         private readonly IExternalFlights externalFlights;
@@ -30,8 +27,7 @@ namespace FlightControlWeb.Controllers
             this.externalFlights = externalFlights;
         }
 
-        //injection - we should get it in the constructor not new
-        // private IProductManager flightManager = new ProductsManger();
+        //injection
         // GET: api/Flights?relative_to=<DATE_TIME>
         [HttpGet]
         public async Task<ActionResult<List<Flight>>> GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
@@ -48,10 +44,9 @@ namespace FlightControlWeb.Controllers
                     flights.AddRange(exFlights);
                 }
             }
-            //the list of flighs we will send to the cliet to update the markers
            
+            //the list of flights we will send to the client to update the marker
             //we need to get from the db all the flight plan that are relvante
-
             List<FlightPlanDB> flightList = sql.flightsList(relative_to);
 
             for (int i = 0; i < flightList.Count; i++)
@@ -75,15 +70,6 @@ namespace FlightControlWeb.Controllers
             }
             
         }
-
-        // GET: api/Flights/5
-        //[HttpGet("{id}", Name = "Get")]
-        //    public string Get(string id)
-        //    {
-        //        return "value";
-        //    }
-
-
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
