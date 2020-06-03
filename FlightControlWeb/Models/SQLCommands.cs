@@ -21,8 +21,8 @@ namespace FlightControlWeb
         {
             string id = createId();
             Coordinate coord = getEndCoors(flightPlan.Segments);
+            //get the end time of the flight
             DateTime endTime = getEndTime(flightPlan.Segments, flightPlan.Initial_Location.Date_Time);
-
             DateTime statTime = TimeZoneInfo.ConvertTimeToUtc(flightPlan.Initial_Location.Date_Time);
             string statTimeString = statTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
             endTime = TimeZoneInfo.ConvertTimeToUtc(endTime);
@@ -88,7 +88,7 @@ namespace FlightControlWeb
         //delete row details from the two table
         public void deleteRow(string id)
         {
-
+            // delete flight from flight table bty id
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
@@ -102,6 +102,8 @@ namespace FlightControlWeb
                 Console.WriteLine(result);
             }
             databaseObject.CloseConnection();
+            // delete segments from segments table by id
+
             query = $"DELETE FROM Segments WHERE id = '{id}';";
             myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
@@ -134,7 +136,7 @@ namespace FlightControlWeb
             {
                 while (result.Read())
                 {
-
+                    //get row after row from the DB
                     segment = new Segment(Convert.ToDouble($"{result["longitude"]}"), Convert.ToDouble($"{result["latitude"]}"), Convert.ToDouble($"{result["timespan"]}"));
                     segmentList.Add(segment);
                 }
@@ -166,7 +168,6 @@ namespace FlightControlWeb
                 {
                     //get id
                     string id = $"{result["id"]}";
-
                     flightPlanDB = flightsplanById(id);
                     flightsList.Add(flightPlanDB);
                 }
@@ -214,18 +215,20 @@ namespace FlightControlWeb
         }
 
 
-
+        
         public string createId()
         {
             RandomGenerator generator = new RandomGenerator();
             return generator.RandomPassword();
         }
+        //get the end coord
         public Coordinate getEndCoors(List<Segment> seg)
         {
             int lastSegIndex = seg.Count - 1;
             Coordinate coord = new Coordinate(seg[lastSegIndex].Latitude, seg[lastSegIndex].Latitude);
             return coord;
         }
+        //get end time of the flight
         public DateTime getEndTime(List<Segment> seg, DateTime startTime)
         {
             double sumSeconds = 0;
@@ -236,6 +239,7 @@ namespace FlightControlWeb
             return startTime.AddSeconds(sumSeconds);
 
         }
+        //convert string to date object
         public DateTime fromStringToDate(string time)
         {
 
@@ -322,6 +326,7 @@ namespace FlightControlWeb
             return ServerList;
 
         }
+        //return server url by id
         public Server serverById(string id)
         {
             Server server = null;
@@ -345,12 +350,5 @@ namespace FlightControlWeb
             return server;
 
         }
-
-
-
-
     }
-
-
-
 }
