@@ -13,16 +13,14 @@ namespace FlightControlWeb
     public class SQLCommands : ISQLCommands
     {
        private Database databaseObject = new Database();
-     //  private readonly IDatabase databaseObject;
        
-
         //add plan to DB from the object we got from json
-        public void addPlan(FlightPlan flightPlan)
+        public void AddPlan(FlightPlan flightPlan)
         {
-            string id = createId();
-            Coordinate coord = getEndCoors(flightPlan.Segments);
+            string id = CreateId();
+            Coordinate coord = GetEndCoors(flightPlan.Segments);
             //get the end time of the flight
-            DateTime endTime = getEndTime(flightPlan.Segments,
+            DateTime endTime = GetEndTime(flightPlan.Segments,
                 flightPlan.Initial_Location.Date_Time);
             DateTime statTime = TimeZoneInfo.ConvertTimeToUtc(
                 flightPlan.Initial_Location.Date_Time);
@@ -53,7 +51,7 @@ namespace FlightControlWeb
             int result = myCommand.ExecuteNonQuery();
             if (result > 0)
             {
-                addListSegmet(flightPlan, id);
+                AddListSegmet(flightPlan, id);
                 Console.WriteLine(result);
             }
             else
@@ -64,7 +62,7 @@ namespace FlightControlWeb
         }
 
         //add list of segment by id to the DB
-        public void addListSegmet(FlightPlan flightPlan, string id)
+        public void AddListSegmet(FlightPlan flightPlan, string id)
         {
             int length = flightPlan.Segments.Count;
             for (int i = 0; i < length; i++)
@@ -97,7 +95,7 @@ namespace FlightControlWeb
 
         }
         //delete row details from the two table
-        public void deleteRow(string id)
+        public void DeleteRow(string id)
         {
             // delete flight from flight table bty id
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
@@ -132,7 +130,7 @@ namespace FlightControlWeb
 
         }
         //return list of segments
-        public List<Segment> segmentList(string id)
+        public List<Segment> SegmentList(string id)
         {
             Segment segment;
             // SELECT FROM DATABASE
@@ -159,7 +157,7 @@ namespace FlightControlWeb
 
         }
         // return all flight plans in the current time
-        public List<FlightPlanDB> flightsList(string time)
+        public List<FlightPlanDB> FlightsList(string time)
         {   //SQL part
             List<FlightPlanDB> flightsList = new List<FlightPlanDB>();
             Database databaseObject = new Database();
@@ -182,7 +180,7 @@ namespace FlightControlWeb
                 {
                     //get id
                     string id = $"{result["id"]}";
-                    flightPlanDB = flightsplanById(id);
+                    flightPlanDB = FlightsPlanById(id);
                     flightsList.Add(flightPlanDB);
                 }
             }
@@ -192,7 +190,7 @@ namespace FlightControlWeb
             return flightsList;
 
         }
-        public FlightPlanDB flightsplanById(string id)
+        public FlightPlanDB FlightsPlanById(string id)
         {
             Database databaseObject = new Database();
             InitialLocation initialLocation;
@@ -215,11 +213,11 @@ namespace FlightControlWeb
                     //create initial location
                     initialLocation = new InitialLocation(Convert.ToDouble(
                         $"{result["start_longitude"]}"),
-                        Convert.ToDouble($"{result["start_latitude"]}"), 
-                        fromStringToDate($"{result["start_time"]}"));
+                        Convert.ToDouble($"{result["start_latitude"]}"),
+                        FromStringToDate($"{result["start_time"]}"));
                     //create flightplan
                     flightPlan = new FlightPlan(passenger, company,
-                        initialLocation, segmentList(id));
+                        initialLocation, SegmentList(id));
                     flightPlanDB = new FlightPlanDB(id, flightPlan);
 
                 }
@@ -233,13 +231,13 @@ namespace FlightControlWeb
 
 
         
-        public string createId()
+        public string CreateId()
         {
             RandomGenerator generator = new RandomGenerator();
             return generator.RandomPassword();
         }
         //get the end coord
-        public Coordinate getEndCoors(List<Segment> seg)
+        public Coordinate GetEndCoors(List<Segment> seg)
         {
             int lastSegIndex = seg.Count - 1;
             Coordinate coord = new Coordinate(seg[lastSegIndex].Latitude,
@@ -247,7 +245,7 @@ namespace FlightControlWeb
             return coord;
         }
         //get end time of the flight
-        public DateTime getEndTime(List<Segment> seg, DateTime startTime)
+        public DateTime GetEndTime(List<Segment> seg, DateTime startTime)
         {
             double sumSeconds = 0;
             foreach (Segment item in seg)
@@ -258,7 +256,7 @@ namespace FlightControlWeb
 
         }
         //convert string to date object
-        public DateTime fromStringToDate(string time)
+        public DateTime FromStringToDate(string time)
         {
 
             DateTime dt = DateTime.Parse(time);
@@ -270,7 +268,7 @@ namespace FlightControlWeb
 
 
         //server table
-        public void addServer(Server server)
+        public void AddServer(Server server)
         {
 
             Database databaseObject = new Database();
@@ -295,7 +293,7 @@ namespace FlightControlWeb
         }
 
 
-        public void deleteServer(string id)
+        public void DeleteServer(string id)
         {
 
             string query = $"DELETE FROM Servers WHERE id = '{id}';";
@@ -334,7 +332,7 @@ namespace FlightControlWeb
                     string id = $"{result["id"]}";
                     string url = $"{result["url"]}";
 
-                    server = serverById($"{result["id"]}");
+                    server = ServerById($"{result["id"]}");
                     ServerList.Add(server);
                 }
             }
@@ -345,7 +343,7 @@ namespace FlightControlWeb
 
         }
         //return server url by id
-        public Server serverById(string id)
+        public Server ServerById(string id)
         {
             Server server = null;
             Database databaseObject = new Database();

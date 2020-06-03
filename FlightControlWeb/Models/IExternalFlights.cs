@@ -5,7 +5,7 @@ namespace FlightControlWeb.Models
 {
     public interface IExternalFlights
     {
-        List<Flight> changeBoolEX(List<Flight> flights);
+        List<Flight> ChangeBoolEX(List<Flight> flights);
         void DeleteDic(string id);
         Task<FlightPlan> GetExternalFlightById(string id);
         Task<List<Flight>> GetExternalFlights(string time);

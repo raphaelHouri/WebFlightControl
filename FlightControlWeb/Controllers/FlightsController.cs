@@ -41,14 +41,14 @@ namespace FlightControlWeb.Controllers
                 List<Flight> exFlights = await externalFlights.GetExternalFlights(relative_to);
                 if(exFlights != null)
                 {
-                    exFlights = externalFlights.changeBoolEX(exFlights);
+                    exFlights = externalFlights.ChangeBoolEX(exFlights);
                     flights.AddRange(exFlights);
                 }
             }
            
             //the list of flights we will send to the client to update the marker
             //we need to get from the db all the flight plan that are relvante
-            List<FlightPlanDB> flightList = sql.flightsList(relative_to);
+            List<FlightPlanDB> flightList = sql.FlightsList(relative_to);
 
             for (int i = 0; i < flightList.Count; i++)
             {
@@ -79,7 +79,7 @@ namespace FlightControlWeb.Controllers
         {
             try
             {
-                sql.deleteRow(id);
+                sql.DeleteRow(id);
                 return Ok();
             }
             catch

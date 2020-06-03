@@ -25,7 +25,7 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<FlightPlan>> GetFlightPlan(string id)
         {
             //find the flighplan in db
-            FlightPlanDB flightPlanDB = sql.flightsplanById(id);
+            FlightPlanDB flightPlanDB = sql.FlightsPlanById(id);
             FlightPlan flightPlan;
             if (flightPlanDB == null)
             {
@@ -58,7 +58,7 @@ namespace FlightControlWeb.Controllers
         {
             try
             {
-                sql.addPlan(p);
+                sql.AddPlan(p);
                 return Created("new flight plan added to the data base",p);
             }
             catch

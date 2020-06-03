@@ -38,7 +38,7 @@ namespace FlightControlWeb.Controllers
         {
             try
             {
-                sql.addServer(server);
+                sql.AddServer(server);
                 return Created("new server added to the data base",server);
             }
             catch
@@ -56,7 +56,7 @@ namespace FlightControlWeb.Controllers
             try
             {
                 //remove it from db
-                sql.deleteServer(id);
+                sql.DeleteServer(id);
                 //and from dic
                 externalFlights.DeleteDic(id);
                 return Ok();

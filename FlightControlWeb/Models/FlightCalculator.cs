@@ -8,13 +8,6 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-
-    //interpolsion
-    //
-    //step 2. sum total time the flight take
-    //step 3. divide the dattime from the total
-    //step 4. check the total distance in the flight
-    //step 5.mult the realtive time to the total distance
     public class FlightCalculator 
     {
 
@@ -44,7 +37,7 @@ namespace FlightControlWeb.Models
         }
 
         //find the spesific segment
-        public int findIndexSegment(List<Segment> segments, double diff)
+        public int FindIndexSegment(List<Segment> segments, double diff)
         {
             double time = 0;
             int index = 0;
@@ -70,8 +63,7 @@ namespace FlightControlWeb.Models
         public Coordinate CurrentPlace(string current, FlightPlan flightPlan, double diff)
         {
             List<Segment> s = flightPlan.Segments;
-            int findIndex = this.findIndexSegment(s, diff);
-            //add condition if ifind=0;
+            int findIndex = this.FindIndexSegment(s, diff);
             double latStart, longStart, latEnd, longEnd;
             if (findIndex == 0)
             {

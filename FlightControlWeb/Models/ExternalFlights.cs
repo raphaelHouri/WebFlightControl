@@ -12,7 +12,7 @@ namespace FlightControlWeb.Models
 {
     public class ExternalFlights : IExternalFlights
     {
-        private static Dictionary<string, string> DicFlightServer;
+        private static Dictionary<string, string> dicFlightServer;
         private readonly ISQLCommands commands;
         public ExternalFlights(ISQLCommands commands)
         {
@@ -21,25 +21,16 @@ namespace FlightControlWeb.Models
         public async Task<FlightPlan> GetExternalFlightById(string id)
         {
             FlightPlan flightPlan = null;
-            // List<FlightPlan> ex = new List<FlightPlan>();
-            //Get
-            //api/FlightPlan/" + id;
-           // SQLCommands commands = new SQLCommands();
             //find the server of the flight id
-            string serverId = DicFlightServer[id];
+            string serverId = dicFlightServer[id];
             if (serverId == null)
             {
                 return null;
             }
             else
             {
-                Server server = commands.serverById(serverId);
-                //like ther= rest of the code
-
-
-                //  List<Server> ourServers = commands.ServerList();
-                //foreach (Server server in ourServers)
-                // {
+                Server server = commands.ServerById(serverId);
+                //get from the server the flight
                 string idFlight = id;
                 string urlServer = server.ServerUrl;
                 string serverApi = urlServer + "/api/FlightPlan/" + idFlight;
@@ -58,18 +49,14 @@ namespace FlightControlWeb.Models
                 }
                 flightPlan = JsonConvert.DeserializeObject<FlightPlan>(strresulttest);
             }
-            //    }
+    
 
             return flightPlan;
         }
         public async Task<List<Flight>> GetExternalFlights(string time)
         {
-            DicFlightServer = new Dictionary<string, string>();
+            dicFlightServer = new Dictionary<string, string>();
             List<Flight> ex = null;
-            // List<FlightPlan> ex = new List<FlightPlan>();
-            //Get
-            //api/FlightPlan/" + id;
-            // SQLCommands commands = new SQLCommands();
             List<Server> ourServers = commands.ServerList();
             foreach (Server server in ourServers)
             {
@@ -94,12 +81,13 @@ namespace FlightControlWeb.Models
                   
                      ex = JsonConvert.DeserializeObject<List<Flight>>(strresulttest);
                     string serverId = server.ServerId;
+                     //save to dic new flights from other servers
                     this.AddToDic(ex, serverId);
                     /*//add mapping from each id flight to the server id
-                    foreach (Flight item in ex)
+                  //  foreach (Flight item in ex)
                     {
                         string flightId = item.Flight_id;
-                        DicFlightServer.Add(flightId,serverId );
+                        dicFlightServer.Add(flightId,serverId );
                   */
                    // }
                 }
@@ -114,17 +102,18 @@ namespace FlightControlWeb.Models
 
         public void AddToDic(List<Flight> listFlight, string serverId)
         {
-            int i;
+                 int i;
                 //add new server and flight id to dic
                 for ( i=0;i<listFlight.Count;i++)
                 {
-                    DicFlightServer.Add(listFlight[i].Flight_id, serverId);
+                    dicFlightServer.Add(listFlight[i].Flight_id, serverId);
                 }
           
 
         }
-        public List<Flight> changeBoolEX(List<Flight> flights)
+        public List<Flight> ChangeBoolEX(List<Flight> flights)
         {
+            //fo through and make the ex bool to true
             foreach (Flight item in flights)
             {
                 item.Is_external = true;
@@ -134,11 +123,11 @@ namespace FlightControlWeb.Models
         public void DeleteDic(string id)
         {
             //remove all the flights with this id server from the dic
-            foreach (var item in DicFlightServer)
+            foreach (var item in dicFlightServer)
             {
                 if (item.Value == id)
                 {
-                    DicFlightServer.Remove(item.Key);
+                    dicFlightServer.Remove(item.Key);
                 }
             }
         }

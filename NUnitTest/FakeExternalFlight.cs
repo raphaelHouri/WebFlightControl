@@ -9,7 +9,7 @@ namespace NUnitTest
 {
     class FakeExternalFlight : IExternalFlights
     {
-        public List<Flight> changeBoolEX(List<Flight> flights)
+        public List<Flight> ChangeBoolEX(List<Flight> flights)
         {
             throw new NotImplementedException();
         }
@@ -34,6 +34,10 @@ namespace NUnitTest
         }
 
         public Task<List<Flight>> GetExternalFlights(string time)
+        {
+            throw new NotImplementedException();
+        }
+        public void DeleteDic(string id)
         {
             throw new NotImplementedException();
         }

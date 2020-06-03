@@ -8,42 +8,42 @@ namespace NUnitTest
     class StubSQLCommand : ISQLCommands
 
     {
-        public void addListSegmet(FlightPlan flightPlan, string id)
+        public void AddListSegmet(FlightPlan flightPlan, string id)
         {
             throw new NotImplementedException();
         }
 
-        public void addPlan(FlightPlan flightPlan)
+        public void AddPlan(FlightPlan flightPlan)
         {
             throw new NotImplementedException();
         }
 
-        public void addServer(Server server)
+        public void AddServer(Server server)
         {
             throw new NotImplementedException();
         }
 
-        public string createId()
+        public string CreateId()
         {
             throw new NotImplementedException();
         }
 
-        public void deleteRow(string id)
+        public void DeleteRow(string id)
         {
             throw new NotImplementedException();
         }
 
-        public void deleteServer(string id)
+        public void DeleteServer(string id)
         {
             throw new NotImplementedException();
         }
 
-        public List<FlightPlanDB> flightsList(string time)
+        public List<FlightPlanDB> FlightsList(string time)
         {
             throw new NotImplementedException();
         }
 
-        public FlightPlanDB flightsplanById(string id)
+        public FlightPlanDB FlightsPlanById(string id)
         {
             if (id == "test1")
             {
@@ -53,7 +53,7 @@ namespace NUnitTest
                 DateTime dt = DateTime.Parse(time);
                 dt = TimeZoneInfo.ConvertTimeToUtc(dt);
                 InitialLocation initial_location = new InitialLocation(34.957610, 29.555631, dt);
-                List<Segment> segments = segmentList("test1");
+                List<Segment> segments = SegmentList("test1");
                 FlightPlan flightPlan = new FlightPlan(passengers, company_name,
                     initial_location, segments);
                 return new FlightPlanDB("test1", flightPlan);
@@ -65,24 +65,24 @@ namespace NUnitTest
             }
         }
 
-        public DateTime fromStringToDate(string time)
+        public DateTime FromStringToDate(string time)
         {
             DateTime dt = DateTime.Parse(time);
             dt = TimeZoneInfo.ConvertTimeToUtc(dt);
             return dt;
         }
 
-        public Coordinate getEndCoors(List<Segment> seg)
+        public Coordinate GetEndCoors(List<Segment> seg)
         {
             throw new NotImplementedException();
         }
 
-        public DateTime getEndTime(List<Segment> seg, DateTime startTime)
+        public DateTime GetEndTime(List<Segment> seg, DateTime startTime)
         {
             throw new NotImplementedException();
         }
 
-        public List<Segment> segmentList(string id)
+        public List<Segment> SegmentList(string id)
         {
             List<Segment> segments = new List<Segment>(){
              new Segment(35.211514,31.769399,10000)
@@ -90,7 +90,7 @@ namespace NUnitTest
             return segments;
         }
 
-        public Server serverById(string id)
+        public Server ServerById(string id)
         {
             throw new NotImplementedException();
         }
