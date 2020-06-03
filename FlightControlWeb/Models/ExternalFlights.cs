@@ -12,7 +12,7 @@ namespace FlightControlWeb.Models
 {
     public class ExternalFlights : IExternalFlights
     {
-        public static Dictionary<string, string> DicFlightServer;
+        private static Dictionary<string, string> DicFlightServer;
         private readonly ISQLCommands commands;
         public ExternalFlights(ISQLCommands commands)
         {
@@ -69,7 +69,7 @@ namespace FlightControlWeb.Models
             // List<FlightPlan> ex = new List<FlightPlan>();
             //Get
             //api/FlightPlan/" + id;
-           // SQLCommands commands = new SQLCommands();
+            // SQLCommands commands = new SQLCommands();
             List<Server> ourServers = commands.ServerList();
             foreach (Server server in ourServers)
             {
@@ -91,12 +91,17 @@ namespace FlightControlWeb.Models
                         strresulttest = sr.ReadToEnd();
                         sr.Close();
                     }
-                    ex = JsonConvert.DeserializeObject<List<Flight>>(strresulttest);
-                    //add mapping from each id flight to the server id
+                  
+                     ex = JsonConvert.DeserializeObject<List<Flight>>(strresulttest);
+                    string serverId = server.ServerId;
+                    this.AddToDic(ex, serverId);
+                    /*//add mapping from each id flight to the server id
                     foreach (Flight item in ex)
                     {
-                        DicFlightServer.Add(item.Flight_id, server.ServerId);
-                    }
+                        string flightId = item.Flight_id;
+                        DicFlightServer.Add(flightId,serverId );
+                  */
+                   // }
                 }
                 catch (Exception)
                 {
@@ -107,6 +112,17 @@ namespace FlightControlWeb.Models
             return ex;
         }
 
+        public void AddToDic(List<Flight> listFlight, string serverId)
+        {
+            int i;
+                //add new server and flight id to dic
+                for ( i=0;i<listFlight.Count;i++)
+                {
+                    DicFlightServer.Add(listFlight[i].Flight_id, serverId);
+                }
+          
+
+        }
         public List<Flight> changeBoolEX(List<Flight> flights)
         {
             foreach (Flight item in flights)
@@ -115,31 +131,16 @@ namespace FlightControlWeb.Models
             }
             return flights;
         }
-
-
-        //public async Task<FlightPlan> GetFlightPlanIdNoError(string id)
-        //{
-        //    //find the flighplan in db
-        //    FlightPlanDB flightPlanDB = commands.flightsplanById(id);
-        //    FlightPlan flightPlan;
-        //    if (flightPlanDB == null)
-        //    {
-        //        try
-        //        {
-        //            flightPlan = await this.GetExternalFlightById(id);
-
-        //        }
-        //        catch
-        //        {
-        //            flightPlan = null;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        flightPlan = flightPlanDB.GetFlightPlan();
-        //    }
-
-        //    return flightPlan;
-        //}
+        public void DeleteDic(string id)
+        {
+            //remove all the flights with this id server from the dic
+            foreach (var item in DicFlightServer)
+            {
+                if (item.Value == id)
+                {
+                    DicFlightServer.Remove(item.Key);
+                }
+            }
+        }
     }
 }

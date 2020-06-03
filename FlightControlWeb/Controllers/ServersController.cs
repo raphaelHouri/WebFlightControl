@@ -12,12 +12,12 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class ServersController : ControllerBase
     {
-        // private SQLCommands sql = new SQLCommands();
         private readonly ISQLCommands sql;
-        
-        public ServersController(ISQLCommands sql)
+        private readonly IExternalFlights externalFlights;
+        public ServersController(ISQLCommands sql, IExternalFlights externalFlights)
         {
             this.sql = sql;
+            this.externalFlights = externalFlights;
         } 
             
         // GET: api/Servers
@@ -57,14 +57,8 @@ namespace FlightControlWeb.Controllers
             {
                 //remove it from db
                 sql.deleteServer(id);
-                //remove all the flights with this id server from the dic
-                foreach (var item in ExternalFlights.DicFlightServer)
-                {
-                    if (item.Value == id)
-                    {
-                        ExternalFlights.DicFlightServer.Remove(item.Key);
-                    }
-                }
+                //and from dic
+                externalFlights.DeleteDic(id);
                 return Ok();
             }
             catch
