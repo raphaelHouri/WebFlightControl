@@ -18,7 +18,6 @@ namespace FlightControlWeb
 
         }
 
-
         public double Lat
         {
             set
@@ -41,6 +40,5 @@ namespace FlightControlWeb
                 return lng;
             }
         }
-
     }
 }
