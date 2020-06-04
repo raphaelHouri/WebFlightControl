@@ -105,14 +105,11 @@ namespace FlightControlWeb
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
             int result = myCommand.ExecuteNonQuery();
-            if (result > 0)
+            if (result <= 0)
             {
-                Console.WriteLine(result);
+                throw new Exception();
             }
-            else
-            {
-                Console.WriteLine(result);
-            }
+
             databaseObject.CloseConnection();
             // delete segments from segments table by id
 
