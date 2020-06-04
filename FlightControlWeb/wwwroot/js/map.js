@@ -1,11 +1,11 @@
-﻿let flagExist = 0;
+﻿
 let markers = [];
 let markerList = [];
 let map;
 let options;
 let flightPlanCoordinates = [];
 let flightPath;
-let ExsitLine = false;
+let clickId = null;
 
 function initMap() {
 
@@ -22,6 +22,9 @@ function initMap() {
 }
 //clean markers that not supposed to appear
 function setMarkerWithoutData() {
+    if (clickId != null) {
+        clickId = null;
+    }
     if (markers.length == 0) {
         return;
     }
@@ -31,6 +34,20 @@ function setMarkerWithoutData() {
 }
 //clean the list of markers
 function removeMarkers() {
+
+    if (clickId == null) {
+        let elmnt = document.getElementById("flightDetail1");
+        if (elmnt != null) {
+            elmnt.remove();
+        }
+        try {
+            flightPath.setMap(null);
+        } catch{
+        }
+
+    }
+
+
     for (let i = 0; i < markerList.length; i++) {
         //Remove previous Marker.
         if (markerList[i] != null) {
@@ -43,20 +60,26 @@ function removeMarkers() {
 function removeDetailsMarkers() {
     markers.forEach(function (item) {
         let myobj = document.getElementById(item.flight_id);
-        myobj.remove();
+        if (myobj != null) {
+            myobj.remove();
+
+        }
+
     });
 }
 
 //set the details off each marker we get
 function setMarker() {
-
+    let flagExist = false;
     removeMarkers();
+
 
 
     for (let i = 0; i < markers.length; i++) {
 
         //Set Marker on Map.
         let data = markers[i];
+
         //let myLatlng = new google.maps.LatLng(data.latitude, data.longitude);
         let marker = new google.maps.Marker({
             position: new Coordinate(markers[i].latitude, markers[i].longitude),
@@ -64,8 +87,18 @@ function setMarker() {
             map: map,
             title: data.title
         });
-        // Set icon image
-        marker.setIcon('/src/image/plane.png');
+        if (data.flight_id == clickId) {
+            flagExist = true;
+            // Set icon image
+            marker.setIcon('/src/image/airplane.png');
+        } else {
+
+            // Set icon image
+            marker.setIcon('/src/image/plane.png');
+
+
+        }
+
         markerList.push(marker);
 
         //Create and open InfoWindow.
@@ -79,30 +112,54 @@ function setMarker() {
 
         //when we click on marker display the table flight
         marker.addListener('click', function () {
-            flagExist = 1;
+            clickId = infoWindow.object.flight_id;
             showTable(infoWindow.object.flight_id)
-                .catch(alert);
-            if (ExsitLine) {
-                flightPath.setMap(null);
-                ExsitLine = false;
-            }
+            flightPath.setMap(null);
+            
         });
         //if append click on the map display clean marker elements 
         google.maps.event.addListener(map, 'click', function () {
-            if (flagExist == 1) {
+            if (clickId != null) {
                 let elmnt = document.getElementById("flightDetail1");
-                elmnt.remove();
-                flagExist = 0;
-                if (ExsitLine) {
-                    flightPath.setMap(null);
-                    ExsitLine = false;
+                if (elmnt != null) {
+                    elmnt.remove();
                 }
+                removeColorRightSide(clickId)
+                flightPath.setMap(null);
+                clickId = null;
 
             }
         });
     }
+
+    if (clickId != null && flagExist ) {
+        addColorRightSide(clickId)
+    }
+    if (!flagExist && clickId != null ) {
+        let elmnt = document.getElementById("flightDetail1");
+        if (elmnt != null) {
+            elmnt.remove();
+        }
+        removeColorRightSide(clickId)
+        clickId = null;
+    }
 }
 
+
+function addColorRightSide(id) {
+    let x = document.getElementById(id);
+    if (x != null) {
+        x.style.color = "#ff8000";
+    }
+
+}
+function removeColorRightSide(id) {
+    let x = document.getElementById(id);
+    if (x != null) {
+        x.style.color = "#212529";
+    }
+
+}
 
 
 async function showTable(id) {
@@ -114,7 +171,7 @@ async function showTable(id) {
         await addFlightDetail(data, id)
     } else {
         //bad response 
-        throw new Error(response.status);
+        goodMessage(response.status);
 
     }
 
@@ -127,7 +184,7 @@ function addFlightDetail(user, id) {
     let segLength = user.segments.length;
     let output = '<div>Flights:</div>';
     output +=
-    `<tr id="flightDetail1" style="font-size: small;">
+        `<tr id="flightDetail1" style="font-size: small;">
         <th>${id}</th>
         <th>${user.initial_location.latitude} , ${user.initial_location.longitude}</th>
         <th>${user.segments[segLength - 1].longitude} ,
@@ -138,7 +195,7 @@ function addFlightDetail(user, id) {
         <th>${user.passengers}</th>
 
         </tr>`
-    ;
+        ;
     document.getElementById('output').innerHTML = output;
     //list of coord for the path of the plain
     flightPlanCoordinates = createListPathCoord(user);
@@ -148,9 +205,8 @@ function addFlightDetail(user, id) {
         strokeOpacity: 1.0,
         strokeWeight: 2
     });
-
+    addColorRightSide(id);
     flightPath.setMap(map);
-    ExsitLine = true;
 }
 
 
@@ -158,23 +214,29 @@ function addFlightDetail(user, id) {
 async function getAllFlight() {
     //get current utc time
     let time = getUTCTime()
-    //ask for all the planes that flight now
-    let response = await fetch("/api/Flights?relative_to=" + time + "&sync_all");
-    if (response.status == 200) {
-        //create list flight from json file
-        let data = await response.json();
-        addDetailsFlights(data);
-        setMarker();
-    } else {
+    try {
+        //ask for all the planes that flight now
+        let response = await fetch("/api/Flights?relative_to=" + time + "&sync_all");
+        if (response.status == 200) {
+            //create list flight from json file
+            let data = await response.json();
+            addDetailsFlights(data);
+            setMarker();
+        } else {
+            setMarkerWithoutData()
+        }
+
+    } catch{
         setMarkerWithoutData()
     }
+
 }
 
 
 //updat the left side screen with the table of extrnal flight and internal flight
 function addDetailsFlights(data) {
     let outputMyFlight =
-    `<div class="item clearfix">
+        `<div class="item clearfix">
             <div class="item__description" ><h6>ID</h6></div>
 
                 <div class="item__description" style="text-indent :1em"><h6>COMPANY</h6></div>
@@ -197,14 +259,15 @@ function addDetailsFlights(data) {
 
         if (!user.is_external) {
             outputMyFlight +=
-            `<div class="item clearfix" id="${user.flight_id}">
+                `<div class="item clearfix" onClick="rowClick(event,'${user.flight_id}')" 
+                id="${user.flight_id}">
                  <div class="item__description" >${user.flight_id}</div>
-
                 <div class="item__description" style="text-indent :1em">${user.company_name}</div>
                 <div class="right clearfix">
                 <div class="item__delete" style="text-indent :1em">
-                    <button class="item__delete--btn" onClick="reply_click('${user.flight_id}')">
-                    <i class="ion-ios-close-outline"></i></button>
+                    <button class="item__delete--btn" id= "deleteBtn"
+                    onClick="deleteFlight(event,  '${user.flight_id}')">
+                    <i class="ion-ios-close-outline"  id= "close"></i></button>
                 </div>
                 </div>
                 </div>
@@ -213,7 +276,8 @@ function addDetailsFlights(data) {
 
         } else {
             outputExFlight +=
-            ` <div class="item clearfix" id="${user.flight_id}">
+                ` <div class="item clearfix"  onClick="rowClick(event,'${user.flight_id}')"
+                id="${user.flight_id}">
                 <div class="item__description">${user.flight_id}</div>
                 <div class="item__description" style="text-indent :1em">${user.company_name}</div>
            </div>
@@ -227,10 +291,31 @@ function addDetailsFlights(data) {
 //the main loop always running
 setInterval(function () {
     getAllFlight()
+
 }, 1000);
 
 //delete when we click on  delete button
-async function reply_click(id) {
+async function deleteFlight(event, id) {
+
+
+    if (clickId == id) {
+
+        let myobj = document.getElementById("flightDetail1");
+        if (myobj != null) {
+            myobj.remove();
+        }
+        let myobj1 = document.getElementById(id);
+        if (myobj1 != null) {
+            myobj1.remove();
+        }
+        removeColorRightSide(id);
+        clickId = null;
+        try {
+            flightPath.setMap(null);
+        } catch{
+
+        }
+    } 
 
     let response = await fetch('/api/Flights/' + id, {
         method: 'DELETE',
@@ -238,20 +323,34 @@ async function reply_click(id) {
     });
     //good respons the flight delete
     if (response.status == 200) {
-        alert(id + ' delete from DB');
+        goodMessage(id + ' delete from DB');
         getAllFlight();
-        if (ExsitLine) {
-            flightPath.setMap(null);
-            ExsitLine = false;
-        }
+
     } else {
         try {
             throw new Error(response.status);
         } catch (error) {
-            alert(error)
+            goodMessage(error)
         }
     }
 }
+
+// when we click on  flight button
+//
+function rowClick(event, flightId) {
+    let id = event.target.id;
+    //if it is just click on row
+    if (id != "close" && id != "deleteBtn") {
+        if (clickId != null) {
+            flightPath.setMap(null);
+            removeColorRightSide(clickId);
+        }
+
+        clickId = flightId;
+        showTable(flightId);
+    }
+}
+
 
 function getEndTime(seg, startTime) {
     let sumSeconds = 0;
@@ -295,4 +394,15 @@ class Coordinate {
         this.lat = lat;
         this.lng = lng;
     }
+}
+
+
+//send messege to the user 
+function goodMessage(string1) {
+    document.getElementById("alert-message").innerHTML = string1;
+    $("#alert-message").show();
+    //timer to appaer
+    setTimeout(function () {
+        $("#alert-message").hide();
+    }, 5000);
 }

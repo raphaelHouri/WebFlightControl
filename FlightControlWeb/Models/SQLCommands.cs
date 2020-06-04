@@ -12,11 +12,12 @@ namespace FlightControlWeb
 {
     public class SQLCommands : ISQLCommands
     {
-       private Database databaseObject = new Database();
+      // private Database databaseObject = new Database();
        
         //add plan to DB from the object we got from json
         public void AddPlan(FlightPlan flightPlan)
         {
+            Database databaseObject = new Database();
             string id = CreateId();
             Coordinate coord = GetEndCoors(flightPlan.Segments);
             //get the end time of the flight
@@ -64,6 +65,7 @@ namespace FlightControlWeb
         //add list of segment by id to the DB
         public void AddListSegmet(FlightPlan flightPlan, string id)
         {
+            Database databaseObject = new Database();
             int length = flightPlan.Segments.Count;
             for (int i = 0; i < length; i++)
             {
@@ -97,6 +99,7 @@ namespace FlightControlWeb
         //delete row details from the two table
         public void DeleteRow(string id)
         {
+            Database databaseObject = new Database();
             // delete flight from flight table bty id
             string query = $"DELETE FROM Flight WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
@@ -134,7 +137,7 @@ namespace FlightControlWeb
         {
             Segment segment;
             // SELECT FROM DATABASE
-
+            Database databaseObject = new Database();
             string query = $"SELECT * FROM Segments WHERE id = '{id}'  ORDER BY serial ASC;";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();
@@ -296,6 +299,7 @@ namespace FlightControlWeb
         public void DeleteServer(string id)
         {
 
+            Database databaseObject = new Database();
             string query = $"DELETE FROM Servers WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
             databaseObject.OpenConnection();

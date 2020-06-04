@@ -33,6 +33,10 @@ namespace FlightControlWeb.Controllers
         public async Task<ActionResult<List<Flight>>> 
             GetAllFlights([FromQuery(Name = "relative_to")] string relative_to)
         {
+            if (relative_to.Contains('T'))
+            {
+                relative_to = relative_to.Replace('T', ' ');
+            }
             List<Flight> flights = new List<Flight>();
             bool checkSyncAll = Request.Query.ContainsKey("sync_all");
             if (checkSyncAll)
@@ -56,15 +60,17 @@ namespace FlightControlWeb.Controllers
                 FlightPlan flightPlan = flightList[i].GetFlightPlan();
 
                 //step 1. subset from  current datetime to initial(need to convert the string).
-                double diff = calculator.SubTime(flightPlan.Initial_Location.Date_Time, relative_to);
+                double diff = calculator.SubTime(flightPlan.Initial_Location.Date_Time,
+                    relative_to);
                 //interpolsion-get the current point
                 Coordinate currentPlace = calculator.CurrentPlace(relative_to, flightPlan, diff);
-                flights.Add(new Flight(id, currentPlace.Lng, currentPlace.Lat, flightPlan.Passengers,
-                    flightPlan.Company_Name, flightPlan.Initial_Location.Date_Time, false));
+                flights.Add(new Flight(id, currentPlace.Lng, currentPlace.Lat,
+                    flightPlan.Passengers,flightPlan.Company_Name, 
+                    flightPlan.Initial_Location.Date_Time, false));
             }
             if (flights.Count==0)
             {
-                return NotFound();
+                return new List<Flight>();
             }
             else
             {

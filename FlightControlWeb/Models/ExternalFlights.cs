@@ -34,7 +34,6 @@ namespace FlightControlWeb.Models
                 string idFlight = id;
                 string urlServer = server.ServerUrl;
                 string serverApi = urlServer + "/api/FlightPlan/" + idFlight;
-                //string strurltest = String.Format("https://jsonplaceholder.typicode.com/posts/1/comments");
                 string strurltest = String.Format(serverApi);
                 WebRequest requestObjGet = WebRequest.Create(strurltest);
                 requestObjGet.Method = "GET";
@@ -63,7 +62,6 @@ namespace FlightControlWeb.Models
                 string date_time = time;
                 string urlServer = server.ServerUrl;
                 string serverApi = urlServer + "/api/Flights?relative_to=" + date_time;
-                //string strurltest = String.Format("https://jsonplaceholder.typicode.com/posts/1/comments");
                 string strurltest = String.Format(serverApi);
                 WebRequest requestObjGet = WebRequest.Create(strurltest);
                 requestObjGet.Method = "GET";

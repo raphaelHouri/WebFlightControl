@@ -29,7 +29,8 @@ namespace FlightControlWeb
         {
 
         } 
-        public FlightPlan( int passengers, string company_name, InitialLocation initial_location, List<Segment> segments)
+        public FlightPlan( int passengers, string company_name,
+            InitialLocation initial_location, List<Segment> segments)
         {
    
             this.Passengers = passengers;
@@ -90,12 +91,14 @@ namespace FlightControlWeb
 
     public partial class Welcome
     {
-        public static Welcome FromJson(string json) => JsonConvert.DeserializeObject<Welcome>(json, FlightControlWeb.Converter.Settings);
+        public static Welcome FromJson(string json) => JsonConvert.DeserializeObject<Welcome>(
+            json, FlightControlWeb.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this Welcome self) => JsonConvert.SerializeObject(self, FlightControlWeb.Converter.Settings);
+        public static string ToJson(this Welcome self) => JsonConvert.SerializeObject(
+            self, FlightControlWeb.Converter.Settings);
     }
 
     internal static class Converter
