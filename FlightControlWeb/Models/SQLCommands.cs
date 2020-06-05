@@ -12,12 +12,12 @@ namespace FlightControlWeb
 {
     public class SQLCommands : ISQLCommands
     {
-      // private Database databaseObject = new Database();
+      private Database databaseObject = new Database();
        
         //add plan to DB from the object we got from json
         public void AddPlan(FlightPlan flightPlan)
         {
-            Database databaseObject = new Database();
+
             string id = CreateId();
             Coordinate coord = GetEndCoors(flightPlan.Segments);
             //get the end time of the flight
@@ -28,27 +28,16 @@ namespace FlightControlWeb
             string statTimeString = statTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
             endTime = TimeZoneInfo.ConvertTimeToUtc(endTime);
             string endTimeString = endTime.ToString("u", DateTimeFormatInfo.InvariantInfo);
-
             ////// INSERT INTO DATABASE
-            string query = "INSERT INTO Flight ('id', 'start_latitude'," +
-                "'start_longitude','end_latitude','end_longitude','start_time'," +
-                "'end_time', 'company', 'passengers') VALUES (@id, @start_latitude," +
-                " @start_longitude, @end_latitude, @end_longitude ,@start_time," +
-                " @end_time, @company, @passengers );";
-
-            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
-            myCommand.Parameters.AddWithValue("@id", id);
-            myCommand.Parameters.AddWithValue("@start_latitude",
-                flightPlan.Initial_Location.Latitude);
-            myCommand.Parameters.AddWithValue("@start_longitude",
-                flightPlan.Initial_Location.Longitude);
-            myCommand.Parameters.AddWithValue("@end_latitude", coord.Lat);
-            myCommand.Parameters.AddWithValue("@end_longitude", coord.Lng);
-            myCommand.Parameters.AddWithValue("@start_time", statTimeString);
-            myCommand.Parameters.AddWithValue("@end_time", endTimeString);
-            myCommand.Parameters.AddWithValue("@company", flightPlan.Company_Name);
-            myCommand.Parameters.AddWithValue("@passengers", flightPlan.Passengers);
+            using var myCommand = new SQLiteCommand(databaseObject.myConnection);
+            string qurey = " VALUES(" + "\'" + id + "\',\'" + flightPlan.Company_Name
+                + "\'," + flightPlan.Passengers + ",\'" + statTimeString + "\'," +
+                flightPlan.Initial_Location.Longitude + "," 
+                + flightPlan.Initial_Location.Latitude  + ","
+                + coord.Lat + "," + coord.Lng + ",\'" + endTimeString + "\'" + ")";
+            myCommand.CommandText = "INSERT INTO Flight(id, company, passengers," +
+                "start_time,start_longitude, start_latitude,end_latitude, " +
+                "end_longitude, end_time)" + qurey;
             int result = myCommand.ExecuteNonQuery();
             if (result > 0)
             {
@@ -59,29 +48,22 @@ namespace FlightControlWeb
             {
                 Console.WriteLine(result);
             }
-            databaseObject.CloseConnection();
+
         }
 
         //add list of segment by id to the DB
         public void AddListSegmet(FlightPlan flightPlan, string id)
         {
-            Database databaseObject = new Database();
+
             int length = flightPlan.Segments.Count;
             for (int i = 0; i < length; i++)
             {
-                string query = "INSERT INTO Segments ('id', 'serial','longitude'," +
-                    " 'latitude','timespan') VALUES (@id, @serial, @longitude," +
-                    " @latitude, @timespan );";
-                SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-
-
-                databaseObject.OpenConnection();
-                myCommand.Parameters.AddWithValue("@id", id);
-                myCommand.Parameters.AddWithValue("@serial", i);
-                myCommand.Parameters.AddWithValue("@longitude", flightPlan.Segments[i].Longitude);
-                myCommand.Parameters.AddWithValue("@latitude", flightPlan.Segments[i].Latitude);
-                myCommand.Parameters.AddWithValue("@timespan",
-                    flightPlan.Segments[i].Timespan_Seconds);
+                using var myCommand = new SQLiteCommand(databaseObject.myConnection);
+                string qurey = " VALUES(" + "\'" + id + "\'," + i + "," +
+                    flightPlan.Segments[i].Longitude + "," + flightPlan.Segments[i].Latitude
+                    + "," + flightPlan.Segments[i].Timespan_Seconds + ")";
+                myCommand.CommandText = "INSERT INTO Segments(id, serial, longitude, latitude," +
+                    " timespan)" + qurey;
                 int result = myCommand.ExecuteNonQuery();
                 if (result > 0)
                 {
@@ -91,7 +73,7 @@ namespace FlightControlWeb
                 {
                     Console.WriteLine(result);
                 }
-                databaseObject.CloseConnection();
+                //databaseObject.CloseConnection();
 
             }
 
@@ -99,24 +81,12 @@ namespace FlightControlWeb
         //delete row details from the two table
         public void DeleteRow(string id)
         {
-            Database databaseObject = new Database();
+
             // delete flight from flight table bty id
-            string query = $"DELETE FROM Flight WHERE id = '{id}';";
-            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
-            int result = myCommand.ExecuteNonQuery();
-            if (result <= 0)
-            {
-                throw new Exception();
-            }
+            string stm = $"DELETE FROM Flight WHERE id= '{id}'";
 
-            databaseObject.CloseConnection();
-            // delete segments from segments table by id
-
-            query = $"DELETE FROM Segments WHERE id = '{id}';";
-            myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
-            result = myCommand.ExecuteNonQuery();
+            using var myCommand1 = new SQLiteCommand(stm, databaseObject.myConnection);
+            int result = myCommand1.ExecuteNonQuery();
             if (result > 0)
             {
                 Console.WriteLine(result);
@@ -125,7 +95,22 @@ namespace FlightControlWeb
             {
                 Console.WriteLine(result);
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
+            // delete segments from segments table by id
+
+             stm = $"DELETE FROM Segments WHERE id='{id}'";
+
+            using var myCommand2 = new SQLiteCommand(stm, databaseObject.myConnection);
+            int s = myCommand2.ExecuteNonQuery();
+            if (result > 0)
+            {
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Console.WriteLine(result);
+            }
+            //databaseObject.CloseConnection();
 
 
         }
@@ -134,10 +119,9 @@ namespace FlightControlWeb
         {
             Segment segment;
             // SELECT FROM DATABASE
-            Database databaseObject = new Database();
             string query = $"SELECT * FROM Segments WHERE id = '{id}'  ORDER BY serial ASC;";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
+            ////databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
             // Creating a List of coordinate
             List<Segment> segmentList = new List<Segment>();
@@ -152,7 +136,7 @@ namespace FlightControlWeb
                     segmentList.Add(segment);
                 }
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
             return segmentList;
 
         }
@@ -160,7 +144,6 @@ namespace FlightControlWeb
         public List<FlightPlanDB> FlightsList(string time)
         {   //SQL part
             List<FlightPlanDB> flightsList = new List<FlightPlanDB>();
-            Database databaseObject = new Database();
             //InitialLocation initialLocation;
             FlightPlanDB flightPlanDB;
             //FlightPlan flightPlan;
@@ -169,7 +152,7 @@ namespace FlightControlWeb
                 $"SELECT * FROM Flight WHERE ('{time}'>= start_time) AND ('{time}' <= end_time)";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
+            ////databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
             // Creating a List of integers
 
@@ -184,7 +167,7 @@ namespace FlightControlWeb
                     flightsList.Add(flightPlanDB);
                 }
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
 
 
             return flightsList;
@@ -192,14 +175,13 @@ namespace FlightControlWeb
         }
         public FlightPlanDB FlightsPlanById(string id)
         {
-            Database databaseObject = new Database();
             InitialLocation initialLocation;
             FlightPlanDB flightPlanDB = null;
             FlightPlan flightPlan;
             string query = $"SELECT * FROM Flight WHERE id = '{id}'";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
+            ////databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
             // Creating a List of integers
 
@@ -222,7 +204,7 @@ namespace FlightControlWeb
 
                 }
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
 
 
             return flightPlanDB;
@@ -271,16 +253,14 @@ namespace FlightControlWeb
         public void AddServer(Server server)
         {
 
-            Database databaseObject = new Database();
             ////// INSERT INTO DATABASE
-            string query = "INSERT INTO Servers ('id', 'url') VALUES (@id, @url);";
 
-            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
-            myCommand.Parameters.AddWithValue("@id", server.ServerId);
-            myCommand.Parameters.AddWithValue("@url", server.ServerUrl);
+            using var cmd = new SQLiteCommand(databaseObject.myConnection);
+            string a = " VALUES(" + "\'" + server.ServerId + "\',\'" + server.ServerUrl + "\')";
+            cmd.CommandText = "INSERT INTO Servers(id,url)" + a;
 
-            int result = myCommand.ExecuteNonQuery();
+            int result = cmd.ExecuteNonQuery();
+
             if (result > 0)
             {
                 Console.WriteLine(result);
@@ -289,28 +269,27 @@ namespace FlightControlWeb
             {
                 Console.WriteLine(result);
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
         }
 
 
         public void DeleteServer(string id)
         {
 
-            Database databaseObject = new Database();
-            string query = $"DELETE FROM Servers WHERE id = '{id}';";
-            SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
-            int result = myCommand.ExecuteNonQuery();
+            string stm = $"DELETE FROM Servers WHERE id = '{id}'";
+
+            using var cmd1 = new SQLiteCommand(stm, databaseObject.myConnection);
+            int result = cmd1.ExecuteNonQuery();
             if (result > 0)
             {
                 Console.WriteLine(result);
             }
             else
             {
-                databaseObject.CloseConnection();
+                //databaseObject.CloseConnection();
                 throw new Exception();
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
         }
         public List<Server> ServerList()
         {   //SQL part
@@ -320,7 +299,7 @@ namespace FlightControlWeb
             string query = $"SELECT * FROM Servers";
 
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
+            ////databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
             // Creating a List of integers
 
@@ -337,7 +316,7 @@ namespace FlightControlWeb
                     ServerList.Add(server);
                 }
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
 
 
             return ServerList;
@@ -347,10 +326,10 @@ namespace FlightControlWeb
         public Server ServerById(string id)
         {
             Server server = null;
-            Database databaseObject = new Database();
+            
             string query = $"SELECT * FROM Servers WHERE id = '{id}';";
             SQLiteCommand myCommand = new SQLiteCommand(query, databaseObject.myConnection);
-            databaseObject.OpenConnection();
+            ////databaseObject.OpenConnection();
             SQLiteDataReader result = myCommand.ExecuteReader();
 
             if (result.HasRows)
@@ -363,9 +342,11 @@ namespace FlightControlWeb
 
                 }
             }
-            databaseObject.CloseConnection();
+            //databaseObject.CloseConnection();
             return server;
 
         }
     }
 }
+
+
