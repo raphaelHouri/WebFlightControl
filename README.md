@@ -24,7 +24,7 @@ We implement the mock func that return the flight plan
 The test check that db didnt have it ,the right flight plan return and the method external flight called once.
 
 ## Screenshots
-![Example screenshot](./img/fly2.jpeg)
+![main](https://user-images.githubusercontent.com/58934116/110238347-d81c3700-7f49-11eb-990d-d4b72fe64626.jpg)
 
 ![Example screenshot](./img/fly1.jpeg)
 
