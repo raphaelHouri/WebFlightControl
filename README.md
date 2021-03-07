@@ -26,7 +26,7 @@ The test check that db didnt have it ,the right flight plan return and the metho
 ## Screenshots
 ![main](https://user-images.githubusercontent.com/58934116/110238347-d81c3700-7f49-11eb-990d-d4b72fe64626.jpg)
 
-![Example screenshot](./img/fly1.jpeg)
+![external](https://user-images.githubusercontent.com/58934116/110238395-1580c480-7f4a-11eb-8074-b8b2238af729.jpg)
 
 ## Contact
 Created by [@raphaelHouri](https://github.com/raphaelHouri) [@meshiBiton](https://github.com/meshibiton)- feel free to contact us! :mailbox_closed:
